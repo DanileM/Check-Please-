@@ -1,0 +1,37 @@
+# Check, Please! — Godot 4.7
+
+This is the main development project, not a throwaway prototype. The current build establishes a finished furniture-free restaurant shell, a walkable street block, the first-person controller, modular table stations, selective comic rendering, and the dormant first customer loop.
+
+## Open
+1. Extract the archive.
+2. Open `project.godot` in Godot 4.7.
+3. Wait for the `.glb` imports to finish.
+4. Run the project (F6/F5).
+
+## Current game foundation
+- First-person waiter controller: WASD + mouse, no jump.
+- Restaurant environment: muted coral, teal, cream, and charcoal architecture with approximately 0.64 m terracotta floor tiles, layered wall paneling, three ceiling bays, warm cove accents, four globe pendants, recessed spots, wall sconces, and selective illustrated outlines.
+- Frontage: two large windows, an open centered glass entrance, an arched sign crown, facade planters, and simple box collision that keeps the doorway traversable while the glazing blocks the player.
+- Street block: two neighboring facades on each side, an opposite-building backdrop, segmented concrete sidewalks, 0.15 m curbs with centered ramps, cool gray asphalt, restrained markings, trees, planters, and bollards.
+- This environment pass intentionally contains no visible restaurant furniture. One modular table station and the customer instance remain dormant at `y = -100` so their scene paths and systems stay available for the later furniture pass.
+- Modular table stations already contain `ApproachPoint`, `SeatPoint`, `WaiterPoint`, `FoodSlot`, and `DrinkSlot`.
+- `customer_1.glb` is the supplied NPC model.
+- Preserved customer cycle:
+  `Walk -> SitDown -> TakeMenu -> ReadMenu -> CallWaiterMenu -> PutAwayMenu -> TakeSpoon -> Eat -> PutAwaySpoon -> CallWaiter -> LeaveReview -> StandUp -> Walk out -> repeat`.
+- `customer_loop_enabled` is currently disabled in `scenes/main.tscn`; it will be re-enabled after furniture placement and navigation positions are finalized.
+- Temporary emotion mapping is active: neutral / sad / happy / angry.
+- Emotion feedback above the NPC uses fade-in + upward movement + fade-out.
+- Imported embedded Menu/Spoon meshes are hidden except during their animation phases. Phone uses the separate `phone.glb` asset and the `Phone_Hold` socket when available.
+- Comic character uses muted material variation, dark architectural trim, and the existing inverted-hull pencil outline only on selected mural/sign elements rather than giant shell planes.
+
+## Asset split
+`assets/furniture` — table, chair, bar counter/shelf, booth.
+`assets/environment` — pendant lamp, TV, wall art, plant.
+`assets/props` — menu, phone, spoon, glass, plate, tray.
+`assets/characters` — customer models.
+
+## Important architecture decision
+Props are independent assets. In production, glasses, plates, phones, menus and utensils should move between world sockets (tray/table/hand) instead of being baked permanently into customer models. The current customer still contains embedded Menu/Spoon nodes, so V1 hides/shows those for reliable alignment while the external-prop socket pipeline is already present for the phone.
+
+## Next development layers
+The project is structured to add: order taking, kitchen tickets, food/tray carrying, table patience, tips/reviews, shift/day economy, additional customers, and restaurant upgrades without rebuilding the level architecture.

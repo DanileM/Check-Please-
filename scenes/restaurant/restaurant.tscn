@@ -1,0 +1,200 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://scripts/restaurant.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://assets/environment/pendant_lamp.glb" id="6_lamp"]
+[ext_resource type="PackedScene" path="res://scenes/restaurant/korean_decor.tscn" id="10_decor"]
+[ext_resource type="PackedScene" path="res://scenes/restaurant/storefront_exterior.tscn" id="11_storefront"]
+[ext_resource type="Material" path="res://materials/restaurant/floor_terracotta.tres" id="12_floor"]
+[ext_resource type="PackedScene" path="res://scenes/restaurant/table_station.tscn" id="13_table_station"]
+[ext_resource type="Material" path="res://materials/restaurant/interior_wall_coral.tres" id="14_back_wall"]
+[ext_resource type="Material" path="res://materials/restaurant/interior_wall_warm.tres" id="15_left_wall"]
+[ext_resource type="Material" path="res://materials/restaurant/interior_wall_teal.tres" id="16_right_wall"]
+[ext_resource type="Material" path="res://materials/restaurant/ceiling_warm.tres" id="17_ceiling"]
+[ext_resource type="PackedScene" path="res://scenes/restaurant/interior_architecture.tscn" id="18_interior_architecture"]
+
+[sub_resource type="Environment" id="RestaurantEnvironment"]
+background_mode = 1
+background_color = Color(0.68, 0.79, 0.82, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.91, 0.86, 0.78, 1)
+ambient_light_energy = 0.34
+reflected_light_source = 2
+tonemap_mode = 2
+
+[sub_resource type="BoxMesh" id="FloorMesh"]
+size = Vector3(18, 0.16, 24)
+material = ExtResource("12_floor")
+
+[sub_resource type="BoxShape3D" id="FloorShape"]
+size = Vector3(18, 0.16, 24)
+
+[sub_resource type="BoxMesh" id="WallLongMesh"]
+size = Vector3(18, 4.1, 0.20)
+material = ExtResource("14_back_wall")
+
+[sub_resource type="BoxShape3D" id="WallLongShape"]
+size = Vector3(18, 4.1, 0.20)
+
+[sub_resource type="BoxMesh" id="LeftWallMesh"]
+size = Vector3(0.20, 4.1, 24)
+material = ExtResource("15_left_wall")
+
+[sub_resource type="BoxMesh" id="RightWallMesh"]
+size = Vector3(0.20, 4.1, 24)
+material = ExtResource("16_right_wall")
+
+[sub_resource type="BoxShape3D" id="WallSideShape"]
+size = Vector3(0.20, 4.1, 24)
+
+[sub_resource type="BoxMesh" id="CeilingMesh"]
+size = Vector3(18, 0.10, 24)
+material = ExtResource("17_ceiling")
+
+[node name="Restaurant" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("RestaurantEnvironment")
+
+[node name="KoreanDecor" parent="." instance=ExtResource("10_decor")]
+
+[node name="StorefrontExterior" parent="." instance=ExtResource("11_storefront")]
+
+[node name="InteriorArchitecture" parent="." instance=ExtResource("18_interior_architecture")]
+
+[node name="Architecture" type="Node3D" parent="."]
+[node name="Floor" type="MeshInstance3D" parent="Architecture"]
+position = Vector3(0, -0.08, 0)
+mesh = SubResource("FloorMesh")
+[node name="FloorBody" type="StaticBody3D" parent="Architecture"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Architecture/FloorBody"]
+position = Vector3(0, -0.08, 0)
+shape = SubResource("FloorShape")
+
+[node name="BackWall" type="MeshInstance3D" parent="Architecture"]
+position = Vector3(0, 2.05, -12)
+mesh = SubResource("WallLongMesh")
+[node name="BackWallBody" type="StaticBody3D" parent="Architecture"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Architecture/BackWallBody"]
+position = Vector3(0, 2.05, -12)
+shape = SubResource("WallLongShape")
+
+[node name="LeftWall" type="MeshInstance3D" parent="Architecture"]
+position = Vector3(-9, 2.05, 0)
+mesh = SubResource("LeftWallMesh")
+[node name="LeftWallBody" type="StaticBody3D" parent="Architecture"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Architecture/LeftWallBody"]
+position = Vector3(-9, 2.05, 0)
+shape = SubResource("WallSideShape")
+
+[node name="RightWall" type="MeshInstance3D" parent="Architecture"]
+position = Vector3(9, 2.05, 0)
+mesh = SubResource("RightWallMesh")
+[node name="RightWallBody" type="StaticBody3D" parent="Architecture"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Architecture/RightWallBody"]
+position = Vector3(9, 2.05, 0)
+shape = SubResource("WallSideShape")
+
+[node name="Ceiling" type="MeshInstance3D" parent="Architecture"]
+position = Vector3(0, 4.10, 0)
+mesh = SubResource("CeilingMesh")
+
+[node name="TableStations" type="Node3D" parent="."]
+
+[node name="TableStationA" parent="TableStations" instance=ExtResource("13_table_station")]
+position = Vector3(0, -100, 0)
+visible = false
+
+[node name="Lights" type="Node3D" parent="."]
+visible = false
+[node name="Lamp1" parent="Lights" instance=ExtResource("6_lamp")]
+position = Vector3(-5, 3.75, 4)
+visible = false
+[node name="Light1" type="OmniLight3D" parent="Lights"]
+position = Vector3(-5, 3.42, 4)
+light_color = Color(1, 0.86, 0.70, 1)
+light_energy = 0.45
+omni_range = 4.3
+shadow_enabled = false
+
+[node name="Lamp2" parent="Lights" instance=ExtResource("6_lamp")]
+position = Vector3(0, 3.75, 4)
+visible = false
+[node name="Light2" type="OmniLight3D" parent="Lights"]
+position = Vector3(0, 3.42, 4)
+light_color = Color(1, 0.86, 0.70, 1)
+light_energy = 0.45
+omni_range = 4.3
+shadow_enabled = true
+
+[node name="Lamp3" parent="Lights" instance=ExtResource("6_lamp")]
+position = Vector3(5, 3.75, 4)
+visible = false
+[node name="Light3" type="OmniLight3D" parent="Lights"]
+position = Vector3(5, 3.42, 4)
+light_color = Color(1, 0.86, 0.70, 1)
+light_energy = 0.45
+omni_range = 4.3
+shadow_enabled = false
+
+[node name="Lamp4" parent="Lights" instance=ExtResource("6_lamp")]
+position = Vector3(-5, 3.75, -1)
+visible = false
+[node name="Light4" type="OmniLight3D" parent="Lights"]
+position = Vector3(-5, 3.42, -1)
+light_color = Color(1, 0.86, 0.70, 1)
+light_energy = 0.45
+omni_range = 4.3
+shadow_enabled = false
+
+[node name="Lamp5" parent="Lights" instance=ExtResource("6_lamp")]
+position = Vector3(0, 3.75, -1)
+visible = false
+[node name="Light5" type="OmniLight3D" parent="Lights"]
+position = Vector3(0, 3.42, -1)
+light_color = Color(1, 0.86, 0.70, 1)
+light_energy = 0.45
+omni_range = 4.3
+shadow_enabled = true
+
+[node name="Lamp6" parent="Lights" instance=ExtResource("6_lamp")]
+position = Vector3(5, 3.75, -1)
+visible = false
+[node name="Light6" type="OmniLight3D" parent="Lights"]
+position = Vector3(5, 3.42, -1)
+light_color = Color(1, 0.86, 0.70, 1)
+light_energy = 0.45
+omni_range = 4.3
+shadow_enabled = false
+
+[node name="Lamp7" parent="Lights" instance=ExtResource("6_lamp")]
+position = Vector3(-3, 3.75, -6.3)
+visible = false
+[node name="Light7" type="OmniLight3D" parent="Lights"]
+position = Vector3(-3, 3.42, -6.3)
+light_color = Color(1, 0.86, 0.70, 1)
+light_energy = 0.45
+omni_range = 4.3
+shadow_enabled = false
+
+[node name="Lamp8" parent="Lights" instance=ExtResource("6_lamp")]
+position = Vector3(3, 3.75, -6.3)
+visible = false
+[node name="Light8" type="OmniLight3D" parent="Lights"]
+position = Vector3(3, 3.42, -6.3)
+light_color = Color(1, 0.86, 0.70, 1)
+light_energy = 0.45
+omni_range = 4.3
+shadow_enabled = true
+
+[node name="FillLight" type="DirectionalLight3D" parent="Lights"]
+rotation_degrees = Vector3(-62, -24, 0)
+light_color = Color(0.80, 0.90, 1, 1)
+light_energy = 0.24
+shadow_enabled = false
+
+[node name="CustomerMarkers" type="Node3D" parent="."]
+[node name="Entry" type="Marker3D" parent="CustomerMarkers"]
+position = Vector3(-6.8, 0, 10.4)
+[node name="Exit" type="Marker3D" parent="CustomerMarkers"]
+position = Vector3(6.8, 0, 10.4)

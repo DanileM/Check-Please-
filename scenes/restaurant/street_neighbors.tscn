@@ -1,0 +1,342 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="Material" path="res://materials/restaurant/exterior_beige.tres" id="1_beige"]
+[ext_resource type="Material" path="res://materials/restaurant/exterior_ochre.tres" id="2_ochre"]
+[ext_resource type="Material" path="res://materials/restaurant/exterior_sage.tres" id="3_sage"]
+[ext_resource type="Material" path="res://materials/restaurant/exterior_salmon.tres" id="4_salmon"]
+[ext_resource type="Material" path="res://materials/restaurant/exterior_window_dark.tres" id="5_window"]
+[ext_resource type="Material" path="res://materials/restaurant/trim_cream.tres" id="6_cream"]
+[ext_resource type="Material" path="res://materials/restaurant/trim_charcoal.tres" id="7_charcoal"]
+[ext_resource type="Material" path="res://materials/restaurant/facade_teal.tres" id="8_teal"]
+[ext_resource type="Material" path="res://materials/restaurant/facade_coral.tres" id="9_coral"]
+
+[sub_resource type="BoxMesh" id="UnitBox"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="BoxShape3D" id="BuildingL2Shape"]
+size = Vector3(12, 7.8, 5.6)
+
+[sub_resource type="BoxShape3D" id="BuildingL1Shape"]
+size = Vector3(10, 6.6, 4.8)
+
+[sub_resource type="BoxShape3D" id="BuildingR1Shape"]
+size = Vector3(11, 7.1, 5.2)
+
+[sub_resource type="BoxShape3D" id="BuildingR2Shape"]
+size = Vector3(11, 8.3, 6.0)
+
+[node name="StreetNeighbors" type="Node3D"]
+
+[node name="BuildingL2" type="Node3D" parent="."]
+
+[node name="MainMass" type="MeshInstance3D" parent="BuildingL2"]
+position = Vector3(-25, 3.9, 9.2)
+scale = Vector3(12, 7.8, 5.6)
+material_override = ExtResource("1_beige")
+mesh = SubResource("UnitBox")
+
+[node name="Cornice" type="MeshInstance3D" parent="BuildingL2"]
+position = Vector3(-25, 7.72, 12.05)
+scale = Vector3(12.45, 0.34, 0.42)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="BeltCourse" type="MeshInstance3D" parent="BuildingL2"]
+position = Vector3(-25, 3.62, 12.08)
+scale = Vector3(12.08, 0.18, 0.30)
+material_override = ExtResource("7_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="GroundWindowBorder" type="MeshInstance3D" parent="BuildingL2"]
+position = Vector3(-25.2, 1.78, 12.10)
+scale = Vector3(7.80, 3.08, 0.18)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="GroundWindow" type="MeshInstance3D" parent="BuildingL2"]
+position = Vector3(-25.2, 1.78, 12.21)
+scale = Vector3(7.45, 2.73, 0.08)
+material_override = ExtResource("5_window")
+mesh = SubResource("UnitBox")
+
+[node name="GroundDoor" type="MeshInstance3D" parent="BuildingL2"]
+position = Vector3(-20.25, 1.55, 12.17)
+scale = Vector3(1.55, 3.10, 0.12)
+material_override = ExtResource("7_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="Awning" type="MeshInstance3D" parent="BuildingL2"]
+position = Vector3(-25.2, 3.25, 12.42)
+scale = Vector3(7.90, 0.22, 0.90)
+material_override = ExtResource("8_teal")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowLeftBorder" type="MeshInstance3D" parent="BuildingL2"]
+position = Vector3(-28.1, 5.58, 12.10)
+scale = Vector3(2.65, 2.55, 0.18)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowLeft" type="MeshInstance3D" parent="BuildingL2"]
+position = Vector3(-28.1, 5.58, 12.21)
+scale = Vector3(2.32, 2.22, 0.08)
+material_override = ExtResource("5_window")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowRightBorder" type="MeshInstance3D" parent="BuildingL2"]
+position = Vector3(-22.7, 5.58, 12.10)
+scale = Vector3(2.65, 2.55, 0.18)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowRight" type="MeshInstance3D" parent="BuildingL2"]
+position = Vector3(-22.7, 5.58, 12.21)
+scale = Vector3(2.32, 2.22, 0.08)
+material_override = ExtResource("5_window")
+mesh = SubResource("UnitBox")
+
+[node name="BuildingL1" type="Node3D" parent="."]
+
+[node name="MainMass" type="MeshInstance3D" parent="BuildingL1"]
+position = Vector3(-14, 3.3, 9.6)
+scale = Vector3(10, 6.6, 4.8)
+material_override = ExtResource("2_ochre")
+mesh = SubResource("UnitBox")
+
+[node name="Cornice" type="MeshInstance3D" parent="BuildingL1"]
+position = Vector3(-14, 6.48, 12.05)
+scale = Vector3(10.30, 0.30, 0.38)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="BeltCourse" type="MeshInstance3D" parent="BuildingL1"]
+position = Vector3(-14, 3.46, 12.08)
+scale = Vector3(10.05, 0.16, 0.26)
+material_override = ExtResource("9_coral")
+mesh = SubResource("UnitBox")
+
+[node name="GroundWindowBorder" type="MeshInstance3D" parent="BuildingL1"]
+position = Vector3(-14.7, 1.72, 12.10)
+scale = Vector3(5.85, 2.95, 0.18)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="GroundWindow" type="MeshInstance3D" parent="BuildingL1"]
+position = Vector3(-14.7, 1.72, 12.21)
+scale = Vector3(5.52, 2.62, 0.08)
+material_override = ExtResource("5_window")
+mesh = SubResource("UnitBox")
+
+[node name="GroundDoor" type="MeshInstance3D" parent="BuildingL1"]
+position = Vector3(-10.25, 1.50, 12.17)
+scale = Vector3(1.45, 3.00, 0.12)
+material_override = ExtResource("7_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="Awning" type="MeshInstance3D" parent="BuildingL1"]
+position = Vector3(-14.7, 3.12, 12.40)
+scale = Vector3(5.95, 0.20, 0.84)
+material_override = ExtResource("8_teal")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowLeftBorder" type="MeshInstance3D" parent="BuildingL1"]
+position = Vector3(-16.3, 5.05, 12.10)
+scale = Vector3(2.20, 2.10, 0.18)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowLeft" type="MeshInstance3D" parent="BuildingL1"]
+position = Vector3(-16.3, 5.05, 12.21)
+scale = Vector3(1.90, 1.80, 0.08)
+material_override = ExtResource("5_window")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowRightBorder" type="MeshInstance3D" parent="BuildingL1"]
+position = Vector3(-12.2, 5.05, 12.10)
+scale = Vector3(2.20, 2.10, 0.18)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowRight" type="MeshInstance3D" parent="BuildingL1"]
+position = Vector3(-12.2, 5.05, 12.21)
+scale = Vector3(1.90, 1.80, 0.08)
+material_override = ExtResource("5_window")
+mesh = SubResource("UnitBox")
+
+[node name="BuildingR1" type="Node3D" parent="."]
+
+[node name="MainMass" type="MeshInstance3D" parent="BuildingR1"]
+position = Vector3(14.5, 3.55, 9.4)
+scale = Vector3(11, 7.1, 5.2)
+material_override = ExtResource("3_sage")
+mesh = SubResource("UnitBox")
+
+[node name="Cornice" type="MeshInstance3D" parent="BuildingR1"]
+position = Vector3(14.5, 6.98, 12.05)
+scale = Vector3(11.35, 0.32, 0.40)
+material_override = ExtResource("7_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="BeltCourse" type="MeshInstance3D" parent="BuildingR1"]
+position = Vector3(14.5, 3.58, 12.08)
+scale = Vector3(11.08, 0.18, 0.28)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="GroundDoor" type="MeshInstance3D" parent="BuildingR1"]
+position = Vector3(9.95, 1.52, 12.17)
+scale = Vector3(1.48, 3.04, 0.12)
+material_override = ExtResource("7_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="GroundWindowBorder" type="MeshInstance3D" parent="BuildingR1"]
+position = Vector3(15.30, 1.75, 12.10)
+scale = Vector3(7.25, 3.02, 0.18)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="GroundWindow" type="MeshInstance3D" parent="BuildingR1"]
+position = Vector3(15.30, 1.75, 12.21)
+scale = Vector3(6.90, 2.67, 0.08)
+material_override = ExtResource("5_window")
+mesh = SubResource("UnitBox")
+
+[node name="Awning" type="MeshInstance3D" parent="BuildingR1"]
+position = Vector3(15.30, 3.20, 12.43)
+scale = Vector3(7.35, 0.22, 0.90)
+material_override = ExtResource("9_coral")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowLeftBorder" type="MeshInstance3D" parent="BuildingR1"]
+position = Vector3(12.25, 5.30, 12.10)
+scale = Vector3(2.45, 2.30, 0.18)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowLeft" type="MeshInstance3D" parent="BuildingR1"]
+position = Vector3(12.25, 5.30, 12.21)
+scale = Vector3(2.12, 1.97, 0.08)
+material_override = ExtResource("5_window")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowRightBorder" type="MeshInstance3D" parent="BuildingR1"]
+position = Vector3(17.25, 5.30, 12.10)
+scale = Vector3(2.45, 2.30, 0.18)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowRight" type="MeshInstance3D" parent="BuildingR1"]
+position = Vector3(17.25, 5.30, 12.21)
+scale = Vector3(2.12, 1.97, 0.08)
+material_override = ExtResource("5_window")
+mesh = SubResource("UnitBox")
+
+[node name="BalconyLedge" type="MeshInstance3D" parent="BuildingR1"]
+position = Vector3(14.75, 4.08, 12.34)
+scale = Vector3(6.80, 0.14, 0.58)
+material_override = ExtResource("7_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="BuildingR2" type="Node3D" parent="."]
+
+[node name="MainMass" type="MeshInstance3D" parent="BuildingR2"]
+position = Vector3(25.5, 4.15, 9.0)
+scale = Vector3(11, 8.3, 6.0)
+material_override = ExtResource("4_salmon")
+mesh = SubResource("UnitBox")
+
+[node name="Cornice" type="MeshInstance3D" parent="BuildingR2"]
+position = Vector3(25.5, 8.16, 12.05)
+scale = Vector3(11.40, 0.34, 0.42)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="BeltCourse" type="MeshInstance3D" parent="BuildingR2"]
+position = Vector3(25.5, 3.74, 12.08)
+scale = Vector3(11.08, 0.18, 0.28)
+material_override = ExtResource("7_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="GroundDoor" type="MeshInstance3D" parent="BuildingR2"]
+position = Vector3(20.80, 1.55, 12.17)
+scale = Vector3(1.45, 3.10, 0.12)
+material_override = ExtResource("7_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="GroundWindowBorder" type="MeshInstance3D" parent="BuildingR2"]
+position = Vector3(26.00, 1.75, 12.10)
+scale = Vector3(7.55, 3.02, 0.18)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="GroundWindow" type="MeshInstance3D" parent="BuildingR2"]
+position = Vector3(26.00, 1.75, 12.21)
+scale = Vector3(7.20, 2.67, 0.08)
+material_override = ExtResource("5_window")
+mesh = SubResource("UnitBox")
+
+[node name="Awning" type="MeshInstance3D" parent="BuildingR2"]
+position = Vector3(26.00, 3.18, 12.43)
+scale = Vector3(7.65, 0.22, 0.92)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="AwningEdge" type="MeshInstance3D" parent="BuildingR2"]
+position = Vector3(26.00, 3.05, 12.84)
+scale = Vector3(7.65, 0.18, 0.12)
+material_override = ExtResource("9_coral")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowLeftBorder" type="MeshInstance3D" parent="BuildingR2"]
+position = Vector3(22.20, 6.00, 12.10)
+scale = Vector3(2.15, 2.50, 0.18)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowLeft" type="MeshInstance3D" parent="BuildingR2"]
+position = Vector3(22.20, 6.00, 12.21)
+scale = Vector3(1.82, 2.17, 0.08)
+material_override = ExtResource("5_window")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowCenterBorder" type="MeshInstance3D" parent="BuildingR2"]
+position = Vector3(25.50, 6.00, 12.10)
+scale = Vector3(2.15, 2.50, 0.18)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowCenter" type="MeshInstance3D" parent="BuildingR2"]
+position = Vector3(25.50, 6.00, 12.21)
+scale = Vector3(1.82, 2.17, 0.08)
+material_override = ExtResource("5_window")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowRightBorder" type="MeshInstance3D" parent="BuildingR2"]
+position = Vector3(28.80, 6.00, 12.10)
+scale = Vector3(2.15, 2.50, 0.18)
+material_override = ExtResource("6_cream")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowRight" type="MeshInstance3D" parent="BuildingR2"]
+position = Vector3(28.80, 6.00, 12.21)
+scale = Vector3(1.82, 2.17, 0.08)
+material_override = ExtResource("5_window")
+mesh = SubResource("UnitBox")
+
+[node name="BuildingCollisions" type="StaticBody3D" parent="."]
+
+[node name="BuildingL2" type="CollisionShape3D" parent="BuildingCollisions"]
+position = Vector3(-25, 3.9, 9.2)
+shape = SubResource("BuildingL2Shape")
+
+[node name="BuildingL1" type="CollisionShape3D" parent="BuildingCollisions"]
+position = Vector3(-14, 3.3, 9.6)
+shape = SubResource("BuildingL1Shape")
+
+[node name="BuildingR1" type="CollisionShape3D" parent="BuildingCollisions"]
+position = Vector3(14.5, 3.55, 9.4)
+shape = SubResource("BuildingR1Shape")
+
+[node name="BuildingR2" type="CollisionShape3D" parent="BuildingCollisions"]
+position = Vector3(25.5, 4.15, 9.0)
+shape = SubResource("BuildingR2Shape")

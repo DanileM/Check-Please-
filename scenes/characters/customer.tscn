@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/customer_1.glb" id="1_customer"]
+[ext_resource type="Script" path="res://scripts/customer_controller.gd" id="2_script"]
+
+[sub_resource type="CapsuleShape3D" id="Capsule_customer"]
+radius = 0.36
+height = 1.55
+
+[node name="Customer" type="CharacterBody3D"]
+script = ExtResource("2_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.78, 0)
+shape = SubResource("Capsule_customer")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="CustomerModel" parent="Visual" instance=ExtResource("1_customer")]
+
+[node name="EmotionAnchor" type="Node3D" parent="."]
+position = Vector3(0, 2.05, 0)
+
+[node name="EmotionLabel" type="Label3D" parent="EmotionAnchor"]
+text = "!"
+font_size = 64
+outline_size = 10
+modulate = Color(1, 0.86, 0.35, 0)
+billboard = 1
+no_depth_test = true

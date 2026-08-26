@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/game.gd" id="1_game"]
+[ext_resource type="PackedScene" path="res://scenes/restaurant/restaurant.tscn" id="2_restaurant"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="3_player"]
+[ext_resource type="PackedScene" path="res://scenes/characters/customer.tscn" id="4_customer"]
+
+[node name="Game" type="Node3D"]
+script = ExtResource("1_game")
+customer_loop_enabled = false
+
+[node name="Restaurant" parent="." instance=ExtResource("2_restaurant")]
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+position = Vector3(0, 0.05, 8.0)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="Customer" parent="." instance=ExtResource("4_customer")]
+position = Vector3(0, -100, 0)
+visible = false
+process_mode = 4
+collision_layer = 0
+collision_mask = 0

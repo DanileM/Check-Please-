@@ -1,0 +1,1010 @@
+[gd_scene load_steps=44 format=3]
+
+[ext_resource type="Material" path="res://materials/restaurant/facade_coral.tres" id="1_facade_coral"]
+[ext_resource type="Material" path="res://materials/restaurant/facade_teal.tres" id="2_facade_teal"]
+[ext_resource type="Material" path="res://materials/restaurant/trim_cream.tres" id="3_trim_cream"]
+[ext_resource type="Material" path="res://materials/restaurant/trim_charcoal.tres" id="4_trim_charcoal"]
+[ext_resource type="Material" path="res://materials/restaurant/glass.tres" id="5_glass"]
+[ext_resource type="Material" path="res://materials/restaurant/lamp_glass.tres" id="6_lamp_glass"]
+[ext_resource type="PackedScene" path="res://scenes/restaurant/street_neighbors.tscn" id="7_neighbors"]
+[ext_resource type="Material" path="res://materials/restaurant/concrete_sidewalk.tres" id="8_concrete"]
+[ext_resource type="Material" path="res://materials/restaurant/asphalt.tres" id="9_asphalt"]
+[ext_resource type="Material" path="res://materials/restaurant/plant_leaves.tres" id="10_leaves"]
+[ext_resource type="Material" path="res://materials/restaurant/plant_trunk.tres" id="11_trunk"]
+[ext_resource type="Material" path="res://materials/restaurant/exterior_beige.tres" id="12_exterior_beige"]
+[ext_resource type="Material" path="res://materials/restaurant/exterior_sage.tres" id="13_exterior_sage"]
+
+[sub_resource type="StandardMaterial3D" id="FramePinkMat"]
+albedo_color = Color(0.36, 0.105, 0.13, 1)
+roughness = 0.68
+
+[sub_resource type="StandardMaterial3D" id="FrameAquaMat"]
+albedo_color = Color(0.07, 0.22, 0.21, 1)
+roughness = 0.72
+
+[sub_resource type="StandardMaterial3D" id="TrimIvoryMat"]
+albedo_color = Color(0.65, 0.55, 0.40, 1)
+roughness = 0.76
+
+[sub_resource type="StandardMaterial3D" id="GlassMat"]
+transparency = 1
+cull_mode = 2
+albedo_color = Color(0.22, 0.73, 0.83, 0.22)
+metallic = 0.08
+roughness = 0.10
+
+[sub_resource type="StandardMaterial3D" id="SidewalkMat"]
+albedo_color = Color(0.86, 0.29, 0.43, 1)
+roughness = 0.88
+
+[sub_resource type="StandardMaterial3D" id="CurbMat"]
+albedo_color = Color(1, 0.58, 0.08, 1)
+roughness = 0.82
+
+[sub_resource type="StandardMaterial3D" id="AsphaltMat"]
+albedo_color = Color(0.045, 0.025, 0.075, 1)
+roughness = 0.94
+
+[sub_resource type="StandardMaterial3D" id="LaneMat"]
+albedo_color = Color(0.45, 0.31, 0.08, 1)
+roughness = 0.80
+
+[sub_resource type="StandardMaterial3D" id="FarSidewalkMat"]
+albedo_color = Color(0.10, 0.63, 0.58, 1)
+roughness = 0.88
+
+[sub_resource type="StandardMaterial3D" id="BuildingTealMat"]
+albedo_color = Color(0.025, 0.25, 0.31, 1)
+roughness = 0.86
+
+[sub_resource type="StandardMaterial3D" id="BuildingCoralMat"]
+albedo_color = Color(0.42, 0.12, 0.16, 1)
+roughness = 0.82
+
+[sub_resource type="StandardMaterial3D" id="BuildingYellowMat"]
+albedo_color = Color(0.46, 0.31, 0.10, 1)
+roughness = 0.84
+
+[sub_resource type="StandardMaterial3D" id="ExteriorWindowMat"]
+albedo_color = Color(0.015, 0.12, 0.20, 1)
+metallic = 0.12
+roughness = 0.18
+
+[sub_resource type="StandardMaterial3D" id="LitWindowMat"]
+albedo_color = Color(1, 0.43, 0.16, 1)
+roughness = 0.52
+emission_enabled = true
+emission = Color(1, 0.19, 0.06, 1)
+emission_energy_multiplier = 0.36
+
+[sub_resource type="StandardMaterial3D" id="TreeTrunkMat"]
+albedo_color = Color(0.24, 0.055, 0.12, 1)
+roughness = 0.94
+
+[sub_resource type="StandardMaterial3D" id="TreeGreenMat"]
+albedo_color = Color(0.015, 0.34, 0.25, 1)
+roughness = 0.92
+
+[sub_resource type="BoxMesh" id="UnitBox"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="CylinderMesh" id="UnitCylinder"]
+top_radius = 0.5
+bottom_radius = 0.5
+height = 1.0
+radial_segments = 24
+
+[sub_resource type="SphereMesh" id="UnitSphere"]
+radius = 0.5
+height = 1.0
+radial_segments = 24
+rings = 12
+
+[sub_resource type="BoxShape3D" id="HeaderShape"]
+size = Vector3(18, 0.65, 0.24)
+
+[sub_resource type="BoxShape3D" id="PierShape"]
+size = Vector3(0.40, 3.45, 0.24)
+
+[sub_resource type="BoxShape3D" id="SillShape"]
+size = Vector3(6.80, 0.50, 0.24)
+
+[sub_resource type="BoxShape3D" id="DoorLintelShape"]
+size = Vector3(2.40, 0.40, 0.24)
+
+[sub_resource type="BoxShape3D" id="WindowShape"]
+size = Vector3(6.80, 2.95, 0.08)
+
+[sub_resource type="BoxShape3D" id="NearSidewalkShape"]
+size = Vector3(70, 0.20, 3.50)
+
+[sub_resource type="BoxShape3D" id="RoadShape"]
+size = Vector3(70, 0.16, 10)
+
+[sub_resource type="BoxShape3D" id="FarSidewalkShape"]
+size = Vector3(70, 0.20, 3)
+
+[sub_resource type="BoxShape3D" id="CurbRampShape"]
+size = Vector3(3.0, 0.12, 1.50)
+
+[sub_resource type="BoxShape3D" id="BuildingShape"]
+size = Vector3(26, 8, 6)
+
+[sub_resource type="BoxShape3D" id="OppositeWingShape"]
+size = Vector3(20, 7.2, 6)
+
+[node name="StorefrontExterior" type="Node3D"]
+
+[node name="NeighborBuildings" parent="." instance=ExtResource("7_neighbors")]
+
+[node name="Facade" type="Node3D" parent="."]
+
+[node name="TopHeader" type="MeshInstance3D" parent="Facade"]
+position = Vector3(0, 3.775, 12)
+scale = Vector3(18, 0.65, 0.24)
+material_override = ExtResource("1_facade_coral")
+mesh = SubResource("UnitBox")
+
+[node name="OuterPierLeft" type="MeshInstance3D" parent="Facade"]
+position = Vector3(-8.70, 1.725, 12)
+scale = Vector3(0.60, 3.45, 0.24)
+material_override = ExtResource("1_facade_coral")
+mesh = SubResource("UnitBox")
+
+[node name="OuterPierRight" type="MeshInstance3D" parent="Facade"]
+position = Vector3(8.70, 1.725, 12)
+scale = Vector3(0.60, 3.45, 0.24)
+material_override = ExtResource("1_facade_coral")
+mesh = SubResource("UnitBox")
+
+[node name="DoorJambLeft" type="MeshInstance3D" parent="Facade"]
+position = Vector3(-1.40, 1.725, 12)
+scale = Vector3(0.40, 3.45, 0.24)
+material_override = ExtResource("1_facade_coral")
+mesh = SubResource("UnitBox")
+
+[node name="DoorJambRight" type="MeshInstance3D" parent="Facade"]
+position = Vector3(1.40, 1.725, 12)
+scale = Vector3(0.40, 3.45, 0.24)
+material_override = ExtResource("1_facade_coral")
+mesh = SubResource("UnitBox")
+
+[node name="DoorLintel" type="MeshInstance3D" parent="Facade"]
+position = Vector3(0, 3.25, 12)
+scale = Vector3(2.40, 0.40, 0.24)
+material_override = ExtResource("1_facade_coral")
+mesh = SubResource("UnitBox")
+
+[node name="WindowSpandrelLeft" type="MeshInstance3D" parent="Facade"]
+position = Vector3(-5, 0.25, 12)
+scale = Vector3(6.80, 0.50, 0.24)
+material_override = ExtResource("1_facade_coral")
+mesh = SubResource("UnitBox")
+
+[node name="WindowSpandrelRight" type="MeshInstance3D" parent="Facade"]
+position = Vector3(5, 0.25, 12)
+scale = Vector3(6.80, 0.50, 0.24)
+material_override = ExtResource("1_facade_coral")
+mesh = SubResource("UnitBox")
+
+[node name="WindowGlassLeft" type="MeshInstance3D" parent="Facade"]
+position = Vector3(-5, 1.975, 11.985)
+scale = Vector3(6.64, 2.83, 0.04)
+material_override = ExtResource("5_glass")
+mesh = SubResource("UnitBox")
+
+[node name="WindowGlassRight" type="MeshInstance3D" parent="Facade"]
+position = Vector3(5, 1.975, 11.985)
+scale = Vector3(6.64, 2.83, 0.04)
+material_override = ExtResource("5_glass")
+mesh = SubResource("UnitBox")
+
+[node name="WindowMullionLeft" type="MeshInstance3D" parent="Facade"]
+position = Vector3(-5, 1.975, 11.84)
+scale = Vector3(0.12, 2.95, 0.32)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="WindowMullionRight" type="MeshInstance3D" parent="Facade"]
+position = Vector3(5, 1.975, 11.84)
+scale = Vector3(0.12, 2.95, 0.32)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="WindowTransomLeft" type="MeshInstance3D" parent="Facade"]
+position = Vector3(-5, 2.55, 11.84)
+scale = Vector3(6.80, 0.12, 0.32)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="WindowTransomRight" type="MeshInstance3D" parent="Facade"]
+position = Vector3(5, 2.55, 11.84)
+scale = Vector3(6.80, 0.12, 0.32)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="DoorTrimLeft" type="MeshInstance3D" parent="Facade"]
+position = Vector3(-1.24, 1.525, 11.84)
+scale = Vector3(0.08, 3.05, 0.34)
+material_override = ExtResource("3_trim_cream")
+mesh = SubResource("UnitBox")
+
+[node name="DoorTrimRight" type="MeshInstance3D" parent="Facade"]
+position = Vector3(1.24, 1.525, 11.84)
+scale = Vector3(0.08, 3.05, 0.34)
+material_override = ExtResource("3_trim_cream")
+mesh = SubResource("UnitBox")
+
+[node name="DoorTrimTop" type="MeshInstance3D" parent="Facade"]
+position = Vector3(0, 3.09, 11.84)
+scale = Vector3(2.56, 0.08, 0.34)
+material_override = ExtResource("3_trim_cream")
+mesh = SubResource("UnitBox")
+
+[node name="DoorCanopy" type="MeshInstance3D" parent="Facade"]
+position = Vector3(0, 3.32, 12.58)
+scale = Vector3(3.35, 0.16, 1.40)
+material_override = ExtResource("2_facade_teal")
+mesh = SubResource("UnitBox")
+
+[node name="InteriorSign" type="Label3D" parent="Facade"]
+position = Vector3(0, 3.72, 11.82)
+rotation = Vector3(0, 3.141593, 0)
+modulate = Color(1, 0.78, 0.39, 1)
+outline_modulate = Color(0.16, 0.02, 0.10, 1)
+text = "봄식당"
+font_size = 64
+outline_size = 10
+pixel_size = 0.006
+
+[node name="FacadeCrown" type="Node3D" parent="Facade"]
+
+[node name="ParapetBand" type="MeshInstance3D" parent="Facade/FacadeCrown"]
+position = Vector3(0, 4.34, 12.02)
+scale = Vector3(18.0, 0.50, 0.26)
+material_override = ExtResource("1_facade_coral")
+mesh = SubResource("UnitBox")
+
+[node name="ArchOuter" type="MeshInstance3D" parent="Facade/FacadeCrown"]
+position = Vector3(0, 4.78, 12.03)
+rotation = Vector3(1.570796, 0, 0)
+scale = Vector3(8.8, 0.18, 2.15)
+material_override = ExtResource("2_facade_teal")
+mesh = SubResource("UnitCylinder")
+
+[node name="ArchInner" type="MeshInstance3D" parent="Facade/FacadeCrown"]
+position = Vector3(0, 4.75, 12.10)
+rotation = Vector3(1.570796, 0, 0)
+scale = Vector3(8.35, 0.16, 1.92)
+material_override = ExtResource("1_facade_coral")
+mesh = SubResource("UnitCylinder")
+
+[node name="CrownBelt" type="MeshInstance3D" parent="Facade/FacadeCrown"]
+position = Vector3(0, 4.16, 12.16)
+scale = Vector3(18.2, 0.14, 0.34)
+material_override = ExtResource("2_facade_teal")
+mesh = SubResource("UnitBox")
+
+[node name="SignBorder" type="MeshInstance3D" parent="Facade/FacadeCrown"]
+position = Vector3(0, 4.70, 12.20)
+scale = Vector3(4.85, 0.86, 0.10)
+material_override = ExtResource("3_trim_cream")
+mesh = SubResource("UnitBox")
+
+[node name="SignPanel" type="MeshInstance3D" parent="Facade/FacadeCrown"]
+position = Vector3(0, 4.70, 12.27)
+scale = Vector3(4.55, 0.66, 0.08)
+material_override = ExtResource("1_facade_coral")
+mesh = SubResource("UnitBox")
+
+[node name="FacadeName" type="Label3D" parent="Facade/FacadeCrown"]
+position = Vector3(0, 4.69, 12.34)
+modulate = Color(0.90, 0.83, 0.69, 1)
+outline_modulate = Color(0.105, 0.095, 0.105, 1)
+text = "봄식당"
+font_size = 72
+outline_size = 9
+pixel_size = 0.007
+
+[node name="OpenEntrance" type="Node3D" parent="Facade"]
+
+[node name="Threshold" type="MeshInstance3D" parent="Facade/OpenEntrance"]
+position = Vector3(0, 0.025, 11.82)
+scale = Vector3(2.34, 0.05, 0.34)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="DoorLeafLeft" type="Node3D" parent="Facade/OpenEntrance"]
+position = Vector3(-1.16, 0, 11.93)
+rotation_degrees = Vector3(0, 70, 0)
+
+[node name="Glass" type="MeshInstance3D" parent="Facade/OpenEntrance/DoorLeafLeft"]
+position = Vector3(0.51, 1.45, 0)
+scale = Vector3(0.84, 2.58, 0.035)
+material_override = ExtResource("5_glass")
+mesh = SubResource("UnitBox")
+
+[node name="OuterRail" type="MeshInstance3D" parent="Facade/OpenEntrance/DoorLeafLeft"]
+position = Vector3(0.04, 1.43, 0)
+scale = Vector3(0.08, 2.84, 0.07)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="InnerRail" type="MeshInstance3D" parent="Facade/OpenEntrance/DoorLeafLeft"]
+position = Vector3(0.98, 1.43, 0)
+scale = Vector3(0.08, 2.84, 0.07)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="TopRail" type="MeshInstance3D" parent="Facade/OpenEntrance/DoorLeafLeft"]
+position = Vector3(0.51, 2.82, 0)
+scale = Vector3(1.02, 0.08, 0.07)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="BottomRail" type="MeshInstance3D" parent="Facade/OpenEntrance/DoorLeafLeft"]
+position = Vector3(0.51, 0.08, 0)
+scale = Vector3(1.02, 0.12, 0.07)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="Handle" type="MeshInstance3D" parent="Facade/OpenEntrance/DoorLeafLeft"]
+position = Vector3(0.76, 1.40, -0.08)
+scale = Vector3(0.045, 0.40, 0.045)
+material_override = ExtResource("3_trim_cream")
+mesh = SubResource("UnitCylinder")
+
+[node name="DoorLeafRight" type="Node3D" parent="Facade/OpenEntrance"]
+position = Vector3(1.16, 0, 11.93)
+rotation_degrees = Vector3(0, -70, 0)
+
+[node name="Glass" type="MeshInstance3D" parent="Facade/OpenEntrance/DoorLeafRight"]
+position = Vector3(-0.51, 1.45, 0)
+scale = Vector3(0.84, 2.58, 0.035)
+material_override = ExtResource("5_glass")
+mesh = SubResource("UnitBox")
+
+[node name="OuterRail" type="MeshInstance3D" parent="Facade/OpenEntrance/DoorLeafRight"]
+position = Vector3(-0.04, 1.43, 0)
+scale = Vector3(0.08, 2.84, 0.07)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="InnerRail" type="MeshInstance3D" parent="Facade/OpenEntrance/DoorLeafRight"]
+position = Vector3(-0.98, 1.43, 0)
+scale = Vector3(0.08, 2.84, 0.07)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="TopRail" type="MeshInstance3D" parent="Facade/OpenEntrance/DoorLeafRight"]
+position = Vector3(-0.51, 2.82, 0)
+scale = Vector3(1.02, 0.08, 0.07)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="BottomRail" type="MeshInstance3D" parent="Facade/OpenEntrance/DoorLeafRight"]
+position = Vector3(-0.51, 0.08, 0)
+scale = Vector3(1.02, 0.12, 0.07)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="Handle" type="MeshInstance3D" parent="Facade/OpenEntrance/DoorLeafRight"]
+position = Vector3(-0.76, 1.40, -0.08)
+scale = Vector3(0.045, 0.40, 0.045)
+material_override = ExtResource("3_trim_cream")
+mesh = SubResource("UnitCylinder")
+
+[node name="ExteriorSconces" type="Node3D" parent="Facade"]
+
+[node name="LeftGlobe" type="MeshInstance3D" parent="Facade/ExteriorSconces"]
+position = Vector3(-7.75, 1.92, 12.30)
+scale = Vector3(0.38, 0.38, 0.38)
+material_override = ExtResource("6_lamp_glass")
+mesh = SubResource("UnitSphere")
+
+[node name="LeftLight" type="OmniLight3D" parent="Facade/ExteriorSconces"]
+position = Vector3(-7.75, 1.92, 12.42)
+light_color = Color(1, 0.78, 0.58, 1)
+light_energy = 0.10
+omni_range = 2.8
+shadow_enabled = false
+
+[node name="RightGlobe" type="MeshInstance3D" parent="Facade/ExteriorSconces"]
+position = Vector3(7.75, 1.92, 12.30)
+scale = Vector3(0.38, 0.38, 0.38)
+material_override = ExtResource("6_lamp_glass")
+mesh = SubResource("UnitSphere")
+
+[node name="RightLight" type="OmniLight3D" parent="Facade/ExteriorSconces"]
+position = Vector3(7.75, 1.92, 12.42)
+light_color = Color(1, 0.78, 0.58, 1)
+light_energy = 0.10
+omni_range = 2.8
+shadow_enabled = false
+
+[node name="FacadeCollision" type="StaticBody3D" parent="Facade"]
+
+[node name="TopHeader" type="CollisionShape3D" parent="Facade/FacadeCollision"]
+position = Vector3(0, 3.775, 12)
+shape = SubResource("HeaderShape")
+
+[node name="OuterPierLeft" type="CollisionShape3D" parent="Facade/FacadeCollision"]
+position = Vector3(-8.70, 1.725, 12)
+shape = SubResource("PierShape")
+
+[node name="OuterPierRight" type="CollisionShape3D" parent="Facade/FacadeCollision"]
+position = Vector3(8.70, 1.725, 12)
+shape = SubResource("PierShape")
+
+[node name="DoorJambLeft" type="CollisionShape3D" parent="Facade/FacadeCollision"]
+position = Vector3(-1.40, 1.725, 12)
+shape = SubResource("PierShape")
+
+[node name="DoorJambRight" type="CollisionShape3D" parent="Facade/FacadeCollision"]
+position = Vector3(1.40, 1.725, 12)
+shape = SubResource("PierShape")
+
+[node name="DoorLintel" type="CollisionShape3D" parent="Facade/FacadeCollision"]
+position = Vector3(0, 3.25, 12)
+shape = SubResource("DoorLintelShape")
+
+[node name="WindowSpandrelLeft" type="CollisionShape3D" parent="Facade/FacadeCollision"]
+position = Vector3(-5, 0.25, 12)
+shape = SubResource("SillShape")
+
+[node name="WindowSpandrelRight" type="CollisionShape3D" parent="Facade/FacadeCollision"]
+position = Vector3(5, 0.25, 12)
+shape = SubResource("SillShape")
+
+[node name="WindowGlassLeft" type="CollisionShape3D" parent="Facade/FacadeCollision"]
+position = Vector3(-5, 1.975, 12)
+shape = SubResource("WindowShape")
+
+[node name="WindowGlassRight" type="CollisionShape3D" parent="Facade/FacadeCollision"]
+position = Vector3(5, 1.975, 12)
+shape = SubResource("WindowShape")
+
+[node name="NearSidewalk" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.10, 13.75)
+scale = Vector3(70, 0.20, 3.50)
+material_override = ExtResource("8_concrete")
+mesh = SubResource("UnitBox")
+
+[node name="NearSidewalkBody" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NearSidewalkBody"]
+position = Vector3(0, -0.10, 13.75)
+shape = SubResource("NearSidewalkShape")
+
+[node name="Street" type="Node3D" parent="."]
+
+[node name="Road" type="MeshInstance3D" parent="Street"]
+position = Vector3(0, -0.23, 20.50)
+scale = Vector3(70, 0.16, 10)
+material_override = ExtResource("9_asphalt")
+mesh = SubResource("UnitBox")
+
+[node name="RoadBody" type="StaticBody3D" parent="Street"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Street/RoadBody"]
+position = Vector3(0, -0.23, 20.50)
+shape = SubResource("RoadShape")
+
+[node name="NearCurb" type="MeshInstance3D" parent="Street"]
+visible = false
+position = Vector3(0, 0.02, 15.50)
+scale = Vector3(40, 0.04, 0.14)
+material_override = SubResource("CurbMat")
+mesh = SubResource("UnitBox")
+
+[node name="FarCurb" type="MeshInstance3D" parent="Street"]
+visible = false
+position = Vector3(0, 0.02, 25.50)
+scale = Vector3(40, 0.04, 0.14)
+material_override = SubResource("CurbMat")
+mesh = SubResource("UnitBox")
+
+[node name="Crosswalk1" type="MeshInstance3D" parent="Street"]
+visible = false
+position = Vector3(-1.80, 0.012, 20.50)
+scale = Vector3(0.34, 0.024, 7.50)
+material_override = SubResource("LaneMat")
+mesh = SubResource("UnitBox")
+
+[node name="Crosswalk2" type="MeshInstance3D" parent="Street"]
+visible = false
+position = Vector3(-1.20, 0.012, 20.50)
+scale = Vector3(0.34, 0.024, 7.50)
+material_override = SubResource("LaneMat")
+mesh = SubResource("UnitBox")
+
+[node name="Crosswalk3" type="MeshInstance3D" parent="Street"]
+visible = false
+position = Vector3(-0.60, 0.012, 20.50)
+scale = Vector3(0.34, 0.024, 7.50)
+material_override = SubResource("LaneMat")
+mesh = SubResource("UnitBox")
+
+[node name="Crosswalk4" type="MeshInstance3D" parent="Street"]
+visible = false
+position = Vector3(0, 0.012, 20.50)
+scale = Vector3(0.34, 0.024, 7.50)
+material_override = SubResource("LaneMat")
+mesh = SubResource("UnitBox")
+
+[node name="Crosswalk5" type="MeshInstance3D" parent="Street"]
+visible = false
+position = Vector3(0.60, 0.012, 20.50)
+scale = Vector3(0.34, 0.024, 7.50)
+material_override = SubResource("LaneMat")
+mesh = SubResource("UnitBox")
+
+[node name="Crosswalk6" type="MeshInstance3D" parent="Street"]
+visible = false
+position = Vector3(1.20, 0.012, 20.50)
+scale = Vector3(0.34, 0.024, 7.50)
+material_override = SubResource("LaneMat")
+mesh = SubResource("UnitBox")
+
+[node name="Crosswalk7" type="MeshInstance3D" parent="Street"]
+visible = false
+position = Vector3(1.80, 0.012, 20.50)
+scale = Vector3(0.34, 0.024, 7.50)
+material_override = SubResource("LaneMat")
+mesh = SubResource("UnitBox")
+
+[node name="FarSidewalk" type="MeshInstance3D" parent="Street"]
+position = Vector3(0, -0.10, 27)
+scale = Vector3(70, 0.20, 3)
+material_override = ExtResource("8_concrete")
+mesh = SubResource("UnitBox")
+
+[node name="FarSidewalkBody" type="StaticBody3D" parent="Street"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Street/FarSidewalkBody"]
+position = Vector3(0, -0.10, 27)
+shape = SubResource("FarSidewalkShape")
+
+[node name="CurbsAndRamps" type="Node3D" parent="Street"]
+
+[node name="NearCurbLeft" type="MeshInstance3D" parent="Street/CurbsAndRamps"]
+position = Vector3(-18.25, -0.075, 15.50)
+scale = Vector3(33.5, 0.15, 0.20)
+material_override = ExtResource("8_concrete")
+mesh = SubResource("UnitBox")
+
+[node name="NearCurbRight" type="MeshInstance3D" parent="Street/CurbsAndRamps"]
+position = Vector3(18.25, -0.075, 15.50)
+scale = Vector3(33.5, 0.15, 0.20)
+material_override = ExtResource("8_concrete")
+mesh = SubResource("UnitBox")
+
+[node name="FarCurbLeft" type="MeshInstance3D" parent="Street/CurbsAndRamps"]
+position = Vector3(-18.25, -0.075, 25.50)
+scale = Vector3(33.5, 0.15, 0.20)
+material_override = ExtResource("8_concrete")
+mesh = SubResource("UnitBox")
+
+[node name="FarCurbRight" type="MeshInstance3D" parent="Street/CurbsAndRamps"]
+position = Vector3(18.25, -0.075, 25.50)
+scale = Vector3(33.5, 0.15, 0.20)
+material_override = ExtResource("8_concrete")
+mesh = SubResource("UnitBox")
+
+[node name="NearRamp" type="MeshInstance3D" parent="Street/CurbsAndRamps"]
+position = Vector3(0, -0.135, 16.25)
+rotation = Vector3(0.099669, 0, 0)
+scale = Vector3(3.0, 0.12, 1.50)
+material_override = ExtResource("8_concrete")
+mesh = SubResource("UnitBox")
+
+[node name="FarRamp" type="MeshInstance3D" parent="Street/CurbsAndRamps"]
+position = Vector3(0, -0.135, 24.75)
+rotation = Vector3(-0.099669, 0, 0)
+scale = Vector3(3.0, 0.12, 1.50)
+material_override = ExtResource("8_concrete")
+mesh = SubResource("UnitBox")
+
+[node name="RampBody" type="StaticBody3D" parent="Street/CurbsAndRamps"]
+
+[node name="NearRamp" type="CollisionShape3D" parent="Street/CurbsAndRamps/RampBody"]
+position = Vector3(0, -0.135, 16.25)
+rotation = Vector3(0.099669, 0, 0)
+shape = SubResource("CurbRampShape")
+
+[node name="FarRamp" type="CollisionShape3D" parent="Street/CurbsAndRamps/RampBody"]
+position = Vector3(0, -0.135, 24.75)
+rotation = Vector3(-0.099669, 0, 0)
+shape = SubResource("CurbRampShape")
+
+[node name="RoadMarkingLeft" type="MeshInstance3D" parent="Street"]
+position = Vector3(-17.5, -0.142, 20.50)
+scale = Vector3(21.0, 0.016, 0.12)
+material_override = SubResource("LaneMat")
+mesh = SubResource("UnitBox")
+
+[node name="RoadMarkingRight" type="MeshInstance3D" parent="Street"]
+position = Vector3(17.5, -0.142, 20.50)
+scale = Vector3(21.0, 0.016, 0.12)
+material_override = SubResource("LaneMat")
+mesh = SubResource("UnitBox")
+
+[node name="SidewalkSeams" type="Node3D" parent="."]
+
+[node name="Seam1" type="MeshInstance3D" parent="SidewalkSeams"]
+position = Vector3(-24, 0.012, 13.75)
+scale = Vector3(0.035, 0.024, 3.25)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="Seam2" type="MeshInstance3D" parent="SidewalkSeams"]
+position = Vector3(-16, 0.012, 13.75)
+scale = Vector3(0.035, 0.024, 3.25)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="Seam3" type="MeshInstance3D" parent="SidewalkSeams"]
+position = Vector3(-8, 0.012, 13.75)
+scale = Vector3(0.035, 0.024, 3.25)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="Seam4" type="MeshInstance3D" parent="SidewalkSeams"]
+position = Vector3(8, 0.012, 13.75)
+scale = Vector3(0.035, 0.024, 3.25)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="Seam5" type="MeshInstance3D" parent="SidewalkSeams"]
+position = Vector3(16, 0.012, 13.75)
+scale = Vector3(0.035, 0.024, 3.25)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="Seam6" type="MeshInstance3D" parent="SidewalkSeams"]
+position = Vector3(24, 0.012, 13.75)
+scale = Vector3(0.035, 0.024, 3.25)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="OppositeBuilding" type="Node3D" parent="."]
+
+[node name="MainMass" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(0, 4, 31.50)
+scale = Vector3(26, 8, 6)
+material_override = SubResource("BuildingTealMat")
+mesh = SubResource("UnitBox")
+
+[node name="BuildingBody" type="StaticBody3D" parent="OppositeBuilding"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="OppositeBuilding/BuildingBody"]
+position = Vector3(0, 4, 31.50)
+shape = SubResource("BuildingShape")
+
+[node name="WingLeftCollision" type="CollisionShape3D" parent="OppositeBuilding/BuildingBody"]
+position = Vector3(-23, 3.60, 31.50)
+shape = SubResource("OppositeWingShape")
+
+[node name="WingRightCollision" type="CollisionShape3D" parent="OppositeBuilding/BuildingBody"]
+position = Vector3(23, 3.60, 31.50)
+shape = SubResource("OppositeWingShape")
+
+[node name="WingLeft" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(-23, 3.60, 31.50)
+scale = Vector3(20, 7.2, 6)
+material_override = ExtResource("12_exterior_beige")
+mesh = SubResource("UnitBox")
+
+[node name="WingLeftCornice" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(-23, 7.15, 28.45)
+scale = Vector3(20.4, 0.28, 0.34)
+material_override = ExtResource("3_trim_cream")
+mesh = SubResource("UnitBox")
+
+[node name="WingLeftGroundWindow" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(-23, 1.75, 28.30)
+scale = Vector3(12.5, 2.70, 0.10)
+material_override = SubResource("ExteriorWindowMat")
+mesh = SubResource("UnitBox")
+
+[node name="WingLeftUpperWindowA" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(-27, 5.20, 28.30)
+scale = Vector3(3.2, 2.20, 0.10)
+material_override = SubResource("ExteriorWindowMat")
+mesh = SubResource("UnitBox")
+
+[node name="WingLeftUpperWindowB" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(-19, 5.20, 28.30)
+scale = Vector3(3.2, 2.20, 0.10)
+material_override = SubResource("LitWindowMat")
+mesh = SubResource("UnitBox")
+
+[node name="WingRight" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(23, 3.60, 31.50)
+scale = Vector3(20, 7.2, 6)
+material_override = ExtResource("13_exterior_sage")
+mesh = SubResource("UnitBox")
+
+[node name="WingRightCornice" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(23, 7.15, 28.45)
+scale = Vector3(20.4, 0.28, 0.34)
+material_override = ExtResource("4_trim_charcoal")
+mesh = SubResource("UnitBox")
+
+[node name="WingRightGroundWindow" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(23, 1.75, 28.30)
+scale = Vector3(12.5, 2.70, 0.10)
+material_override = SubResource("ExteriorWindowMat")
+mesh = SubResource("UnitBox")
+
+[node name="WingRightUpperWindowA" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(19, 5.20, 28.30)
+scale = Vector3(3.2, 2.20, 0.10)
+material_override = SubResource("LitWindowMat")
+mesh = SubResource("UnitBox")
+
+[node name="WingRightUpperWindowB" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(27, 5.20, 28.30)
+scale = Vector3(3.2, 2.20, 0.10)
+material_override = SubResource("ExteriorWindowMat")
+mesh = SubResource("UnitBox")
+
+[node name="RoofCornice" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(0, 8.175, 31.50)
+scale = Vector3(27, 0.35, 6.50)
+material_override = SubResource("FramePinkMat")
+mesh = SubResource("UnitBox")
+
+[node name="GroundPanel" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(0, 1.775, 28.40)
+scale = Vector3(25.80, 3.55, 0.12)
+material_override = SubResource("BuildingCoralMat")
+mesh = SubResource("UnitBox")
+
+[node name="UpperPanel" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(0, 5.79, 28.40)
+scale = Vector3(25.80, 4.18, 0.12)
+material_override = SubResource("BuildingYellowMat")
+mesh = SubResource("UnitBox")
+
+[node name="BeltCourse" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(0, 3.62, 28.28)
+scale = Vector3(26.40, 0.24, 0.22)
+material_override = SubResource("FrameAquaMat")
+mesh = SubResource("UnitBox")
+
+[node name="GroundBorderLeft" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(-6.90, 1.78, 28.29)
+scale = Vector3(8.40, 2.72, 0.08)
+material_override = SubResource("TrimIvoryMat")
+mesh = SubResource("UnitBox")
+
+[node name="GroundWindowLeft" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(-6.90, 1.78, 28.22)
+scale = Vector3(7.95, 2.30, 0.08)
+material_override = SubResource("ExteriorWindowMat")
+mesh = SubResource("UnitBox")
+
+[node name="GroundBorderRight" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(6.90, 1.78, 28.29)
+scale = Vector3(8.40, 2.72, 0.08)
+material_override = SubResource("TrimIvoryMat")
+mesh = SubResource("UnitBox")
+
+[node name="GroundWindowRight" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(6.90, 1.78, 28.22)
+scale = Vector3(7.95, 2.30, 0.08)
+material_override = SubResource("LitWindowMat")
+mesh = SubResource("UnitBox")
+
+[node name="MarketDoorBorder" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(0, 1.48, 28.20)
+scale = Vector3(2.70, 3.10, 0.11)
+material_override = SubResource("FrameAquaMat")
+mesh = SubResource("UnitBox")
+
+[node name="MarketDoor" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(0, 1.48, 28.12)
+scale = Vector3(2.18, 2.78, 0.09)
+material_override = SubResource("ExteriorWindowMat")
+mesh = SubResource("UnitBox")
+
+[node name="UpperBorderLeft" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(-8, 5.65, 28.29)
+scale = Vector3(4.40, 2.60, 0.08)
+material_override = SubResource("TrimIvoryMat")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowLeft" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(-8, 5.65, 28.22)
+scale = Vector3(3.90, 2.10, 0.08)
+material_override = SubResource("LitWindowMat")
+mesh = SubResource("UnitBox")
+
+[node name="UpperBorderCenter" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(0, 5.65, 28.29)
+scale = Vector3(4.40, 2.60, 0.08)
+material_override = SubResource("TrimIvoryMat")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowCenter" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(0, 5.65, 28.22)
+scale = Vector3(3.90, 2.10, 0.08)
+material_override = SubResource("ExteriorWindowMat")
+mesh = SubResource("UnitBox")
+
+[node name="UpperBorderRight" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(8, 5.65, 28.29)
+scale = Vector3(4.40, 2.60, 0.08)
+material_override = SubResource("TrimIvoryMat")
+mesh = SubResource("UnitBox")
+
+[node name="UpperWindowRight" type="MeshInstance3D" parent="OppositeBuilding"]
+position = Vector3(8, 5.65, 28.22)
+scale = Vector3(3.90, 2.10, 0.08)
+material_override = SubResource("ExteriorWindowMat")
+mesh = SubResource("UnitBox")
+
+[node name="MarketSign" type="Label3D" parent="OppositeBuilding"]
+position = Vector3(0, 3.08, 28.10)
+rotation = Vector3(0, 3.141593, 0)
+modulate = Color(1, 0.78, 0.39, 1)
+outline_modulate = Color(0.16, 0.02, 0.10, 1)
+text = "봄마켓"
+font_size = 76
+outline_size = 12
+pixel_size = 0.009
+
+[node name="StreetTrees" type="Node3D" parent="."]
+
+[node name="TrunkLeft" type="MeshInstance3D" parent="StreetTrees"]
+position = Vector3(-10.20, 1.20, 27.60)
+scale = Vector3(0.42, 2.40, 0.42)
+material_override = SubResource("TreeTrunkMat")
+mesh = SubResource("UnitCylinder")
+
+[node name="CrownLeft1" type="MeshInstance3D" parent="StreetTrees"]
+position = Vector3(-10.20, 3.05, 27.60)
+scale = Vector3(2.30, 2.55, 1.75)
+material_override = SubResource("TreeGreenMat")
+mesh = SubResource("UnitSphere")
+
+[node name="CrownLeft2" type="MeshInstance3D" parent="StreetTrees"]
+position = Vector3(-9.40, 2.80, 27.55)
+scale = Vector3(1.55, 1.90, 1.45)
+material_override = SubResource("FrameAquaMat")
+mesh = SubResource("UnitSphere")
+
+[node name="TrunkRight" type="MeshInstance3D" parent="StreetTrees"]
+position = Vector3(10.20, 1.20, 27.60)
+scale = Vector3(0.42, 2.40, 0.42)
+material_override = SubResource("TreeTrunkMat")
+mesh = SubResource("UnitCylinder")
+
+[node name="CrownRight1" type="MeshInstance3D" parent="StreetTrees"]
+position = Vector3(10.20, 3.05, 27.60)
+scale = Vector3(2.30, 2.55, 1.75)
+material_override = SubResource("TreeGreenMat")
+mesh = SubResource("UnitSphere")
+
+[node name="CrownRight2" type="MeshInstance3D" parent="StreetTrees"]
+position = Vector3(9.40, 2.80, 27.55)
+scale = Vector3(1.55, 1.90, 1.45)
+material_override = SubResource("FrameAquaMat")
+mesh = SubResource("UnitSphere")
+
+[node name="NearStreetGreenery" type="Node3D" parent="."]
+
+[node name="TreePitLeft" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(-11.5, 0.035, 14.15)
+scale = Vector3(2.05, 0.07, 1.50)
+material_override = ExtResource("11_trunk")
+mesh = SubResource("UnitBox")
+
+[node name="TreeLeftTrunk" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(-11.5, 1.65, 14.15)
+scale = Vector3(0.42, 3.30, 0.42)
+material_override = ExtResource("11_trunk")
+mesh = SubResource("UnitCylinder")
+
+[node name="TreeLeftCrownCenter" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(-11.5, 4.05, 14.15)
+scale = Vector3(2.55, 2.25, 2.30)
+material_override = ExtResource("10_leaves")
+mesh = SubResource("UnitSphere")
+
+[node name="TreeLeftCrownSideA" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(-10.55, 3.82, 14.10)
+scale = Vector3(1.45, 1.65, 1.45)
+material_override = ExtResource("10_leaves")
+mesh = SubResource("UnitSphere")
+
+[node name="TreeLeftCrownSideB" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(-12.35, 3.72, 14.10)
+scale = Vector3(1.35, 1.55, 1.40)
+material_override = ExtResource("10_leaves")
+mesh = SubResource("UnitSphere")
+
+[node name="TreePitRight" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(11.5, 0.035, 14.15)
+scale = Vector3(2.05, 0.07, 1.50)
+material_override = ExtResource("11_trunk")
+mesh = SubResource("UnitBox")
+
+[node name="TreeRightTrunk" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(11.5, 1.65, 14.15)
+scale = Vector3(0.42, 3.30, 0.42)
+material_override = ExtResource("11_trunk")
+mesh = SubResource("UnitCylinder")
+
+[node name="TreeRightCrownCenter" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(11.5, 4.05, 14.15)
+scale = Vector3(2.55, 2.25, 2.30)
+material_override = ExtResource("10_leaves")
+mesh = SubResource("UnitSphere")
+
+[node name="TreeRightCrownSideA" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(10.55, 3.82, 14.10)
+scale = Vector3(1.45, 1.65, 1.45)
+material_override = ExtResource("10_leaves")
+mesh = SubResource("UnitSphere")
+
+[node name="TreeRightCrownSideB" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(12.35, 3.72, 14.10)
+scale = Vector3(1.35, 1.55, 1.40)
+material_override = ExtResource("10_leaves")
+mesh = SubResource("UnitSphere")
+
+[node name="FacadePlanterLeft" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(-6.8, 0.32, 12.72)
+scale = Vector3(1.35, 0.64, 0.72)
+material_override = ExtResource("2_facade_teal")
+mesh = SubResource("UnitBox")
+
+[node name="FacadePlantLeftA" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(-7.12, 0.92, 12.72)
+scale = Vector3(0.72, 0.78, 0.66)
+material_override = ExtResource("10_leaves")
+mesh = SubResource("UnitSphere")
+
+[node name="FacadePlantLeftB" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(-6.48, 0.94, 12.72)
+scale = Vector3(0.72, 0.82, 0.66)
+material_override = ExtResource("10_leaves")
+mesh = SubResource("UnitSphere")
+
+[node name="FacadePlanterRight" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(6.8, 0.32, 12.72)
+scale = Vector3(1.35, 0.64, 0.72)
+material_override = ExtResource("2_facade_teal")
+mesh = SubResource("UnitBox")
+
+[node name="FacadePlantRightA" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(6.48, 0.92, 12.72)
+scale = Vector3(0.72, 0.78, 0.66)
+material_override = ExtResource("10_leaves")
+mesh = SubResource("UnitSphere")
+
+[node name="FacadePlantRightB" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(7.12, 0.94, 12.72)
+scale = Vector3(0.72, 0.82, 0.66)
+material_override = ExtResource("10_leaves")
+mesh = SubResource("UnitSphere")
+
+[node name="BollardLeft" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(-2.15, 0.42, 14.45)
+scale = Vector3(0.24, 0.84, 0.24)
+material_override = ExtResource("2_facade_teal")
+mesh = SubResource("UnitCylinder")
+
+[node name="BollardRight" type="MeshInstance3D" parent="NearStreetGreenery"]
+position = Vector3(2.15, 0.42, 14.45)
+scale = Vector3(0.24, 0.84, 0.24)
+material_override = ExtResource("2_facade_teal")
+mesh = SubResource("UnitCylinder")
+
+[node name="ExteriorDaylight" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-32, 12, 0)
+light_color = Color(0.94, 0.84, 0.74, 1)
+light_energy = 0.42
+shadow_enabled = true

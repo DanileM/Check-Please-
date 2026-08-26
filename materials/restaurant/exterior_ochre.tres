@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://shaders/stylized_architecture.gdshader" id="1_shader"]
+
+[resource]
+shader = ExtResource("1_shader")
+shader_parameter/base_color = Color(0.38, 0.27, 0.12, 1)
+shader_parameter/surface_roughness = 0.88
+shader_parameter/color_variation = 0.020
