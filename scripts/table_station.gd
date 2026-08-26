@@ -5,6 +5,7 @@ extends Node3D
 
 @onready var approach_point: Marker3D = $ApproachPoint
 @onready var seat_point: Marker3D = $SeatPoint
+@onready var look_point: Marker3D = $LookPoint
 @onready var waiter_point: Marker3D = $WaiterPoint
 @onready var food_slot: Marker3D = $FoodSlot
 @onready var drink_slot: Marker3D = $DrinkSlot

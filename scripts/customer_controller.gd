@@ -1,8 +1,21 @@
 class_name CustomerController
 extends CharacterBody3D
 
+signal seating_state_changed(state_name: StringName)
+
+enum SeatingState {
+    IDLE,
+    WALK_TO_CHAIR,
+    ALIGN_TO_CHAIR,
+    SIT_DOWN,
+    SEATED,
+    CALL_WAITER,
+    CALL_WAITER_MENU,
+}
+
 @export var walk_speed := 1.65
 @export var model_yaw_offset_degrees := 180.0
+@export var final_alignment_duration := 0.32
 
 @onready var visual: Node3D = $Visual
 @onready var model_root: Node3D = $Visual/CustomerModel
@@ -11,10 +24,14 @@ extends CharacterBody3D
 
 var animation_player: AnimationPlayer
 var skeleton: Skeleton3D
+var head_look_modifier
+var head_look_target: Node3D
 var table_station: TableStation
 var entry_point: Marker3D
 var exit_point: Marker3D
-var running := false
+var seating_running := false
+var seating_state := SeatingState.IDLE
+var call_waiter_cycles := 0
 
 var menu_node: Node3D
 var spoon_node: Node3D
@@ -25,10 +42,12 @@ var mouth: Node3D
 var face_base := {}
 
 const PHONE_SCENE := preload("res://assets/props/phone.glb")
+const HEAD_LOOK_MODIFIER_SCRIPT := preload("res://scripts/head_look_modifier.gd")
 
 func _ready() -> void:
     animation_player = _find_animation_player(model_root)
     skeleton = _find_skeleton(model_root)
+    _setup_head_look()
     menu_node = model_root.find_child("MenuBook", true, false) as Node3D
     spoon_node = model_root.find_child("Spoon", true, false) as Node3D
     brow_l = model_root.find_child("Eyebrow_L", true, false) as Node3D
@@ -48,56 +67,82 @@ func configure(station: TableStation, entry: Marker3D, exit: Marker3D) -> void:
     global_position = entry_point.global_position
 
 func start_loop() -> void:
-    if running: return
-    running = true
-    _customer_loop()
+    start_seating_sequence()
 
-func _customer_loop() -> void:
-    while running:
-        visible = true
-        global_position = entry_point.global_position
-        set_face_state("neutral")
-        await _walk_to(table_station.approach_point.global_position)
-        _face_toward(table_station.global_position)
-        global_position = table_station.seat_point.global_position
-        await _play_once("SitDown")
+func start_seating_sequence() -> void:
+    if seating_running or table_station == null or entry_point == null:
+        return
+    seating_running = true
+    call_waiter_cycles = 0
+    call_deferred("_run_seating_sequence")
 
-        set_face_state("neutral")
-        _set_prop(menu_node, true)
-        await _play_once("TakeMenu")
+func _run_seating_sequence() -> void:
+    visible = true
+    global_position = entry_point.global_position
+    set_face_state("neutral")
 
-        set_face_state("angry")
-        await _play_once("ReadMenu")
+    _set_seating_state(SeatingState.WALK_TO_CHAIR)
+    await _walk_to(table_station.approach_point.global_position)
 
-        set_face_state("sad")
-        show_emotion("!")
-        await _play_once("CallWaiterMenu")
-        await _play_once("PutAwayMenu")
-        _set_prop(menu_node, false)
+    _set_seating_state(SeatingState.ALIGN_TO_CHAIR)
+    await _align_to_seat()
 
-        set_face_state("neutral")
-        _set_prop(spoon_node, true)
-        await _play_once("TakeSpoon")
-        set_face_state("happy")
-        show_emotion("+")
-        await _play_once("Eat")
-        await _play_once("PutAwaySpoon")
-        _set_prop(spoon_node, false)
+    _set_seating_state(SeatingState.SIT_DOWN)
+    await _play_once("SitDown")
+    global_transform = table_station.seat_point.global_transform
 
-        set_face_state("sad")
-        show_emotion("?")
-        await _play_once("CallWaiter")
+    _set_seating_state(SeatingState.SEATED)
+    await get_tree().physics_frame
 
-        set_face_state("happy")
-        _phone_visibility_sequence()
-        await _play_once("LeaveReview")
-        show_emotion("★")
+    _set_seating_state(SeatingState.CALL_WAITER)
+    while seating_running:
+        global_transform = table_station.seat_point.global_transform
+        call_waiter_cycles += 1
+        await _play_for_duration("CallWaiter")
+        global_transform = table_station.seat_point.global_transform
 
-        set_face_state("neutral")
-        await _play_once("StandUp")
-        await _walk_to(exit_point.global_position)
-        visible = false
-        await get_tree().create_timer(1.2).timeout
+func _set_seating_state(next_state: SeatingState) -> void:
+    seating_state = next_state
+    set_head_look_enabled(
+        next_state == SeatingState.CALL_WAITER
+        or next_state == SeatingState.CALL_WAITER_MENU
+    )
+    seating_state_changed.emit(SeatingState.keys()[next_state])
+
+func set_head_look_target(target: Node3D) -> void:
+    head_look_target = target
+    if head_look_modifier:
+        head_look_modifier.set_head_look_target(target)
+
+func set_head_look_enabled(enabled: bool) -> void:
+    if head_look_modifier:
+        head_look_modifier.set_head_look_enabled(enabled)
+
+func get_head_look_modifier():
+    return head_look_modifier
+
+func _setup_head_look() -> void:
+    if skeleton == null:
+        push_warning("Customer head look disabled: Skeleton3D was not found")
+        return
+    head_look_modifier = HEAD_LOOK_MODIFIER_SCRIPT.new()
+    head_look_modifier.name = "HeadLookModifier"
+    skeleton.add_child(head_look_modifier)
+    head_look_modifier.configure(&"Head_2")
+    head_look_modifier.set_head_look_target(head_look_target)
+    head_look_modifier.set_head_look_enabled(false)
+
+func _align_to_seat() -> void:
+    _face_toward(table_station.look_point.global_position)
+    var original_mask := collision_mask
+    collision_mask = 0
+    var tween := create_tween()
+    tween.tween_property(self, "global_position", table_station.seat_point.global_position, final_alignment_duration) \
+        .set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+    await tween.finished
+    collision_mask = original_mask
+    global_transform = table_station.seat_point.global_transform
+    _face_toward(table_station.look_point.global_position)
 
 func _walk_to(target: Vector3) -> void:
     _play_loop("Walk")
@@ -137,6 +182,16 @@ func _play_once(name: StringName) -> void:
     if anim: anim.loop_mode = Animation.LOOP_NONE
     animation_player.play(name, 0.12)
     await animation_player.animation_finished
+
+func _play_for_duration(name: StringName) -> void:
+    if animation_player == null or not animation_player.has_animation(name):
+        return
+    var animation := animation_player.get_animation(name)
+    if animation == null:
+        return
+    animation.loop_mode = Animation.LOOP_NONE
+    animation_player.play(name, 0.12)
+    await get_tree().create_timer(animation.length).timeout
 
 func _find_animation_player(node: Node) -> AnimationPlayer:
     if node is AnimationPlayer: return node

@@ -1,3 +1,67 @@
+# Customer Head Look Task List
+
+## Task 12: Implement the Reusable Solver
+
+**Acceptance criteria:**
+
+- [x] Uses the imported `Head_2` bone and Godot 4.7 post-animation modifier pass.
+- [x] Applies only local yaw/pitch additively to the current animated head pose.
+- [x] Clamps yaw to ±55°, pitch to +25°/-30°, rejects outside ±85° or 8 m, and smooths at 7/5.
+
+**Verification:** focused RED/GREEN Godot runtime test of solver output and limits.
+
+## Task 13: Integrate Calling States and Camera Target
+
+**Acceptance criteria:**
+
+- [x] `Player/Head/Camera3D` is supplied as the look target.
+- [x] `CALL_WAITER` and `CALL_WAITER_MENU` enable look; all other seating states disable it.
+- [x] Current seating loop, body animation, props, controller, and source GLB remain unchanged outside this behavior.
+
+**Verification:** controller state/animation integration test using both actual clip names.
+
+## Task 14: Validate Visual Behavior and Regressions
+
+**Acceptance criteria:**
+
+- [x] Front, ±30°, ±50°, ±75°, behind, re-entry, and smooth reset cases pass.
+- [x] Both calling clips continue animating body/arms while only the head receives the procedural offset.
+- [x] Main scene runs cleanly; customer remains seated; no `.glb` or generated import file changed.
+
+**Verification:** Godot 4.7 import/parse, focused runtime harness, main-scene smoke run, and change audit.
+
+# Current Task: Customer Seating Sequence
+
+## Task 9: Place One Reusable Seating Setup
+
+**Acceptance criteria:**
+
+- [x] Exactly one imported table and one imported chair are visible.
+- [x] Table, chair, `ApproachPoint`, `SeatPoint`, and `LookPoint` are floor-aligned and reusable.
+- [x] Legacy duplicate furniture is not visible.
+
+**Verification:** Godot import plus visual scene check.
+
+## Task 10: Run the Seating State Machine
+
+**Acceptance criteria:**
+
+- [x] Customer starts away from the chair and uses `Walk` to reach `ApproachPoint`.
+- [x] Customer performs short alignment, actual `SitDown`, then remains at `SeatPoint`.
+- [x] Actual `CallWaiter` repeats while seated.
+
+**Verification:** Focused Godot runtime check of state transitions and animation names.
+
+## Task 11: Validate the Playable View
+
+**Acceptance criteria:**
+
+- [x] Main scene starts without parse/resource errors.
+- [x] Player controls remain enabled.
+- [x] Seating alignment and repeating call are visually inspected.
+
+**Verification:** Main-scene runtime and captured camera view.
+
 # Restaurant Environment Task List
 
 ## Task 1: Audit Current Project

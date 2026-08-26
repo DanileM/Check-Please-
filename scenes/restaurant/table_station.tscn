@@ -5,15 +5,16 @@
 [ext_resource type="Script" path="res://scripts/table_station.gd" id="3_script"]
 
 [sub_resource type="BoxShape3D" id="TableCollision"]
-size = Vector3(1.35, 0.78, 0.82)
+size = Vector3(0.82, 0.78, 0.82)
 
 [sub_resource type="BoxShape3D" id="ChairCollision"]
-size = Vector3(0.53, 0.90, 0.50)
+size = Vector3(0.54, 0.82, 0.54)
 
 [node name="TableStation" type="Node3D" groups=["table_station"]]
 script = ExtResource("3_script")
 
 [node name="Table" parent="." instance=ExtResource("1_table")]
+position = Vector3(0, 0.735, 0)
 
 [node name="TableBody" type="StaticBody3D" parent="."]
 
@@ -22,27 +23,22 @@ position = Vector3(0, 0.39, 0)
 shape = SubResource("TableCollision")
 
 [node name="ChairCustomer" parent="." instance=ExtResource("2_chair")]
-position = Vector3(0, 0, 1.22)
+position = Vector3(0, 0, 1.12)
 rotation = Vector3(0, 3.141593, 0)
-
-[node name="ChairLeft" parent="." instance=ExtResource("2_chair")]
-position = Vector3(-1.10, 0, 0)
-rotation = Vector3(0, -1.570796, 0)
-
-[node name="ChairRight" parent="." instance=ExtResource("2_chair")]
-position = Vector3(1.10, 0, 0)
-rotation = Vector3(0, 1.570796, 0)
 
 [node name="ChairBodyCustomer" type="StaticBody3D" parent="."]
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ChairBodyCustomer"]
-position = Vector3(0, 0.45, 1.22)
+position = Vector3(0, 0.41, 1.12)
 shape = SubResource("ChairCollision")
 
 [node name="ApproachPoint" type="Marker3D" parent="."]
-position = Vector3(0, 0, 2.0)
+position = Vector3(0, 0, 1.72)
 
 [node name="SeatPoint" type="Marker3D" parent="."]
-position = Vector3(0, 0, 1.20)
+position = Vector3(0, 0, 1.12)
+
+[node name="LookPoint" type="Marker3D" parent="."]
+position = Vector3(0, 0.72, 0)
 
 [node name="WaiterPoint" type="Marker3D" parent="."]
 position = Vector3(0, 0, -1.30)

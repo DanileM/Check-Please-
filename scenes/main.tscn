@@ -7,7 +7,7 @@
 
 [node name="Game" type="Node3D"]
 script = ExtResource("1_game")
-customer_loop_enabled = false
+customer_seating_enabled = true
 
 [node name="Restaurant" parent="." instance=ExtResource("2_restaurant")]
 
@@ -16,8 +16,4 @@ position = Vector3(0, 0.05, 8.0)
 rotation = Vector3(0, 3.141593, 0)
 
 [node name="Customer" parent="." instance=ExtResource("4_customer")]
-position = Vector3(0, -100, 0)
-visible = false
-process_mode = 4
-collision_layer = 0
-collision_mask = 0
+position = Vector3(-3.5, 0, 8)

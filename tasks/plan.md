@@ -1,3 +1,82 @@
+# Current Task: Additive Customer Head Look
+
+## Discovery
+
+- Customer wrapper/controller: `scenes/characters/customer.tscn` / `scripts/customer_controller.gd`.
+- Imported animation system: `Visual/CustomerModel/AnimationPlayer`; the real calling clips are `CallWaiter` and `CallWaiterMenu`.
+- Imported skeleton: `Visual/CustomerModel/Rig/Skeleton3D`; the real head bone is `Head_2`, parented to `Spine`.
+- Player eye target: `Game/Player/Head/Camera3D`.
+- Both calling clips already animate `Head_2`; there is no existing procedural bone modifier.
+- Godot 4.7.1 exposes `SkeletonModifier3D._process_modification_with_delta(delta)`, which runs in the skeleton modification pass after animation evaluation.
+
+## Architecture Decisions
+
+- Add one reusable `SkeletonModifier3D` solver under the imported skeleton at runtime. It owns target selection, local-space angle solving, limits, cone/distance rejection, and exponential smoothing.
+- Read the evaluated `Head_2` pose inside the modifier callback and multiply a yaw/pitch offset onto it for that frame. This preserves the authored head track and never changes roll procedurally.
+- Keep player discovery in `game.gd`; pass the actual `Camera3D` to the customer controller, then pass that target to the low-level solver.
+- Make calling-state entry/exit authoritative. `CALL_WAITER` and the actual menu variant `CALL_WAITER_MENU` enable tracking; every other state disables it.
+- Keep the current gameplay loop on `CallWaiter`; add no new menu gameplay, animation framework, or source-model edits.
+
+## Ordered Slices
+
+1. **Solver (RED/GREEN):** add a failing focused test, then implement local yaw/pitch, ±55° neck clamp, ±85° activation cone, 8 m distance gate, and 7/5 exponential smoothing in a reusable modifier.
+2. **Integration:** install the modifier on `Head_2`, pass `Player/Head/Camera3D`, and toggle it from explicit calling states including `CallWaiterMenu`.
+3. **Runtime validation:** parse/import, run main, test front/left/right/side/behind/resume/reset cases, and verify both calling clips retain non-head animation tracks and seated placement.
+
+## Result
+
+- All slices are complete. The focused Godot 4.7 test covers direct front, ±30°/50°/75°, rotated-NPC local space, pitch limits, distance, behind/re-entry, both calling clips, smooth exit, authored roll, and a control-character comparison for every non-head bone.
+- Editor import, the existing seating regression, a 600-frame main smoke run, and an actual Compatibility-rendered visual check pass. `customer_1.glb` matches its repository hash and no imported source artifact changed.
+
+## Risks
+
+| Risk | Mitigation |
+| --- | --- |
+| Animation overwrites the procedural pose | Use the Godot 4.7 skeleton modifier pass rather than `_process()` ordering guesses. |
+| Rig forward/sign conventions invert tracking | Measure against the imported skeleton/model orientation and assert signed cases in the focused runtime test. |
+| Offset accumulates each frame | Always start from the animation-evaluated pose supplied to the modifier pass; never persistently override a global bone transform. |
+| Existing dirty work is accidentally bundled | Patch only the controller/game integration and new solver; do not stage, commit, reset, or alter unrelated files. |
+
+# Current Task: Customer Seating Sequence
+
+## Overview
+
+Use the existing `TableStation` and `CustomerController` to stage exactly one imported table, one imported chair, and one customer. The playable sequence is deliberately limited to walk, final alignment, real `SitDown`, seated hold, and repeating real `CallWaiter`.
+
+## Discovery
+
+- Main scene: `scenes/main.tscn`; restaurant: `scenes/restaurant/restaurant.tscn`.
+- Customer wrapper: `scenes/characters/customer.tscn`; controller: `scripts/customer_controller.gd`; source GLB: `assets/characters/customer_1.glb`.
+- Furniture GLBs: `assets/furniture/table.glb`, `assets/furniture/chair.glb`.
+- Actual imported animations: `Walk` (1.042 s), `SitDown` (1.000 s), `CallWaiter` (2.708 s).
+- No navigation region, mesh, or agent exists; the existing `CharacterBody3D` movement is the smallest compatible path.
+- Git exists but status cannot be queried due ownership protection; no git configuration or destructive git action will be used.
+
+## Architecture Decisions
+
+- Keep `TableStationA` as the reusable owner of imported furniture and Marker3D transforms; add `LookPoint` to make the seating contract explicit.
+- Keep the controller as the single NPC system. Replace the active loop entry with an explicit seating state machine and leave unrelated future helpers inactive.
+- `SeatPoint` is authoritative after the real sit animation; alignment moves only the short final distance to it.
+- No source GLB or generated import artifact is edited.
+
+## Ordered Slices
+
+1. Furniture slice: expose one `TableStationA`, hide legacy duplicate meshes, set table/chair/marker transforms and simple collisions; import/run check.
+2. Behavior slice: add `WALK_TO_CHAIR → ALIGN_TO_CHAIR → SIT_DOWN → SEATED → CALL_WAITER`, use actual animation names and animation completion; runtime check.
+3. Validation slice: run a deterministic seating test, capture a real camera view, verify player remains functional and inspect alignment.
+
+## Result
+
+- All three slices are complete. The focused runtime test confirms all seating states, `SeatPoint` stability, a repeating call cycle, visible imported furniture, hidden legacy duplicates, and an enabled player.
+
+## Risks
+
+| Risk | Mitigation |
+| --- | --- |
+| Imported sit root does not align | Use the existing marker contract, then correct only at `SitDown` completion. |
+| Chair collision blocks final seat position | Keep the approach point outside the collider; make only the short controlled alignment ignore character collision. |
+| Call animation resets pose | Preserve the authoritative seat transform and restart the actual non-looping imported animation only after it finishes. |
+
 # Implementation Plan: Production Restaurant Environment Pass
 
 ## Overview

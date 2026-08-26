@@ -1,6 +1,6 @@
 # Check, Please! — Godot 4.7
 
-This is the main development project, not a throwaway prototype. The current build establishes a finished furniture-free restaurant shell, a walkable street block, the first-person controller, modular table stations, selective comic rendering, and the dormant first customer loop.
+This is the main development project, not a throwaway prototype. The current build establishes a finished restaurant shell, a walkable street block, the first-person controller, one reusable customer seating station, selective comic rendering, and the first playable customer seating sequence.
 
 ## Open
 1. Extract the archive.
@@ -13,12 +13,11 @@ This is the main development project, not a throwaway prototype. The current bui
 - Restaurant environment: muted coral, teal, cream, and charcoal architecture with approximately 0.64 m terracotta floor tiles, layered wall paneling, three ceiling bays, warm cove accents, four globe pendants, recessed spots, wall sconces, and selective illustrated outlines.
 - Frontage: two large windows, an open centered glass entrance, an arched sign crown, facade planters, and simple box collision that keeps the doorway traversable while the glazing blocks the player.
 - Street block: two neighboring facades on each side, an opposite-building backdrop, segmented concrete sidewalks, 0.15 m curbs with centered ramps, cool gray asphalt, restrained markings, trees, planters, and bollards.
-- This environment pass intentionally contains no visible restaurant furniture. One modular table station and the customer instance remain dormant at `y = -100` so their scene paths and systems stay available for the later furniture pass.
+- Current seating test: one imported table, one imported chair, and one customer. The customer walks to `ApproachPoint`, aligns to `SeatPoint`, plays the imported `SitDown`, then repeats imported `CallWaiter` while seated.
 - Modular table stations already contain `ApproachPoint`, `SeatPoint`, `WaiterPoint`, `FoodSlot`, and `DrinkSlot`.
 - `customer_1.glb` is the supplied NPC model.
-- Preserved customer cycle:
-  `Walk -> SitDown -> TakeMenu -> ReadMenu -> CallWaiterMenu -> PutAwayMenu -> TakeSpoon -> Eat -> PutAwaySpoon -> CallWaiter -> LeaveReview -> StandUp -> Walk out -> repeat`.
-- `customer_loop_enabled` is currently disabled in `scenes/main.tscn`; it will be re-enabled after furniture placement and navigation positions are finalized.
+- The current active NPC slice deliberately stops after `Walk -> SitDown -> CallWaiter`. Menu, food, review, standing, and exit flow remain future work.
+- `customer_seating_enabled` is active in `scenes/main.tscn`.
 - Temporary emotion mapping is active: neutral / sad / happy / angry.
 - Emotion feedback above the NPC uses fade-in + upward movement + fade-out.
 - Imported embedded Menu/Spoon meshes are hidden except during their animation phases. Phone uses the separate `phone.glb` asset and the `Phone_Hold` socket when available.
