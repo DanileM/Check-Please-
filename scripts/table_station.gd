@@ -10,6 +10,7 @@ signal empty_plate_collected
 
 @onready var approach_point: Marker3D = $ApproachPoint
 @onready var seat_point: Marker3D = $SeatPoint
+@onready var exit_point: Marker3D = get_node_or_null("ExitPoint") as Marker3D
 @onready var look_point: Marker3D = $LookPoint
 @onready var waiter_point: Marker3D = $WaiterPoint
 @onready var food_slot: Marker3D = $FoodSlot

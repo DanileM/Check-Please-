@@ -35,6 +35,8 @@ enum SeatingState {
 @export var walk_speed := 1.65
 @export var model_yaw_offset_degrees := 180.0
 @export var final_alignment_duration := 0.32
+@export var seat_transition_duration := 0.26
+@export var seat_exit_transition_duration := 0.28
 
 @export_group("Customer Escalation")
 @export var menu_read_duration := 5.0
@@ -55,6 +57,7 @@ enum SeatingState {
 @export var burger_price_cents := 200
 
 @onready var visual: Node3D = $Visual
+@onready var standing_collision_shape: CollisionShape3D = $CollisionShape3D
 @onready var model_root: Node3D = $Visual/CustomerModel
 @onready var emotion_anchor: Node3D = $EmotionAnchor
 @onready var emotion_label: Label3D = $EmotionAnchor/EmotionLabel
@@ -70,6 +73,7 @@ var table_station: TableStation
 var entry_point: Marker3D
 var exit_point: Marker3D
 var seating_running := false
+var seating_transition_active := false
 var seating_state := SeatingState.IDLE
 var call_waiter_cycles := 0
 
@@ -107,6 +111,7 @@ func _ready() -> void:
     ComicStyle.apply(model_root, 0.010)
     emotion_label.modulate.a = 0.0
     emotion_label.visible = false
+    _set_standing_collision_enabled(true)
 
 
 func configure(station: TableStation, entry: Marker3D, exit: Marker3D) -> void:
@@ -124,6 +129,8 @@ func start_seating_sequence() -> void:
     if seating_running or table_station == null or entry_point == null or exit_point == null:
         return
     seating_running = true
+    seating_transition_active = false
+    _set_standing_collision_enabled(true)
     call_waiter_cycles = 0
     _waiter_interaction_received = false
     _food_delivery_received = false
@@ -200,7 +207,7 @@ func _run_seating_sequence() -> void:
 
     _set_seating_state(SeatingState.SIT_DOWN)
     await _play_once(&"SitDown")
-    global_transform = table_station.seat_point.global_transform
+    _lock_to_seat_point()
 
     _set_seating_state(SeatingState.SEATED)
     await get_tree().physics_frame
@@ -322,10 +329,13 @@ func _run_review_and_departure(review_state: SeatingState) -> void:
 
     _set_seating_state(SeatingState.STAND_UP)
     await _play_once(&"StandUp")
-    global_transform = table_station.seat_point.global_transform
+    _lock_to_seat_point()
+    await _move_out_of_seat()
+    _set_standing_collision_enabled(true)
+    await get_tree().physics_frame
 
     _set_seating_state(SeatingState.LEAVE)
-    await _walk_to(exit_point.global_position, true)
+    await _walk_to(exit_point.global_position)
     visible = false
     seating_running = false
     _set_seating_state(SeatingState.COMPLETE)
@@ -380,16 +390,60 @@ func _setup_head_look() -> void:
 
 
 func _align_to_seat() -> void:
-    _face_toward(table_station.look_point.global_position)
-    var original_mask := collision_mask
-    collision_mask = 0
+    velocity = Vector3.ZERO
+    await _align_visual_to_seat()
+    _set_standing_collision_enabled(false)
+    await get_tree().physics_frame
+    seating_transition_active = true
     var tween := create_tween()
-    tween.tween_property(self, "global_position", table_station.seat_point.global_position, final_alignment_duration) \
+    tween.tween_property(self, "global_position", table_station.seat_point.global_position, seat_transition_duration) \
         .set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
     await tween.finished
-    collision_mask = original_mask
-    global_transform = table_station.seat_point.global_transform
+    _lock_to_seat_point()
     _face_toward(table_station.look_point.global_position)
+    seating_transition_active = false
+
+
+func _align_visual_to_seat() -> void:
+    var direction := table_station.look_point.global_position - global_position
+    direction.y = 0.0
+    if direction.length_squared() < 0.000001:
+        return
+    var target_yaw := atan2(direction.x, direction.z) + deg_to_rad(model_yaw_offset_degrees)
+    var tween := create_tween()
+    tween.tween_property(visual, "rotation:y", target_yaw, final_alignment_duration) \
+        .set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+    await tween.finished
+
+
+func _move_out_of_seat() -> void:
+    var exit_anchor := table_station.exit_point if table_station.exit_point else table_station.approach_point
+    seating_transition_active = true
+    _lock_to_seat_point()
+    var tween := create_tween()
+    tween.tween_property(self, "global_position", exit_anchor.global_position, seat_exit_transition_duration) \
+        .set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+    await tween.finished
+    global_position = exit_anchor.global_position
+    velocity = Vector3.ZERO
+    seating_transition_active = false
+
+
+func _lock_to_seat_point() -> void:
+    if table_station:
+        global_position = table_station.seat_point.global_position
+    velocity = Vector3.ZERO
+
+
+func _set_standing_collision_enabled(enabled: bool) -> void:
+    if standing_collision_shape:
+        standing_collision_shape.set_deferred("disabled", not enabled)
+
+
+func _physics_process(_delta: float) -> void:
+    var is_seated_phase := seating_state >= SeatingState.SEATED and seating_state <= SeatingState.STAND_UP
+    if is_seated_phase and not seating_transition_active:
+        _lock_to_seat_point()
 
 
 func _walk_to(target: Vector3, ignore_collision := false) -> void:

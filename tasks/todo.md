@@ -1,3 +1,40 @@
+# Controlled Customer Seating Alignment Task List
+
+## Task 31: Define Station-Owned Seating and Exit Anchors
+
+**Description:** Use the existing front approach anchor, tune the station-local seat anchor against the real chair, and add a clear exit anchor for the reverse transition.
+
+**Acceptance criteria:**
+
+- [x] Normal walking target ends at `ApproachPoint`; seat and exit targets remain local to the assigned station.
+- [x] The tuned seat pose keeps hips on the front half of the seat and torso ahead of the backrest.
+
+**Verification:** Focused seating harness plus front/side real-scene captures.
+
+**Dependencies:** None.
+
+**Files likely touched:** `scenes/restaurant/table_station.tscn`, `scripts/table_station.gd`, `.tmp/verify_customer_seating.gd`.
+
+## Task 32: Make Controlled Sit/Stand Own Customer Movement and Collision
+
+**Description:** Stop ordinary walk movement before alignment; move only through controlled station transitions, suspend the standing capsule while seated, then restore it once the character is clear of the chair.
+
+**Acceptance criteria:**
+
+- [x] No normal walking/tween overlap; the seated root is stable at the station anchor.
+- [x] Stand-up reaches clear space before standing collision and normal walk resume; player furniture collision stays untouched.
+
+**Verification:** Focused state/collision harness, food/payment flow regression, and main-scene smoke run.
+
+**Dependencies:** Task 31.
+
+**Files likely touched:** `scripts/customer_controller.gd`, `scenes/characters/customer.tscn`, `.tmp/verify_customer_seating.gd`.
+
+## Checkpoint: Customer Seating Alignment
+
+- [x] Sit/stand, menu progression, and player furniture collision pass focused checks.
+- [x] Godot 4.7 main scene parses/runs without new seating errors.
+
 # Card Payment Terminal Flow Task List
 
 ## Task 27: Request Payment from the Existing Food Sequence

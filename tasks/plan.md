@@ -1,3 +1,51 @@
+# Current Task: Controlled Customer Seating Alignment
+
+## Overview
+
+Fix the existing table-station seating transition without changing player/furniture collision. The customer will navigate only to the station's front `ApproachPoint`, stop all walking ownership, align, ease into a visually tuned front-half `SeatPoint`, play the imported `SitDown`, remain root-locked while seated, and reverse safely through the approach area before normal walking resumes.
+
+## Discovery
+
+- `CustomerController` currently owns movement directly with `move_and_slide()`; there is no `NavigationAgent3D`, `NavigationRegion3D`, or navigation mesh in this project.
+- `TableStationA` already exposes local `ApproachPoint` `(0, 0, 1.72)`, `SeatPoint` `(0, 0, 1.12)`, and `LookPoint`; the chair's static player collider occupies the same local chair center around `z=1.12`.
+- The current `_align_to_seat()` disables the customer's collision mask and moves the root directly from approach to that center point before `SitDown`. That places the animated body too far back into the backrest. The same routine is not mirrored on exit, where the root is reset to the center point after `StandUp` and immediately walks away.
+- Furniture stays in its own `StaticBody3D` nodes. The customer has one standing capsule, while the player collision must remain unchanged.
+
+## Architecture Decisions
+
+- Preserve the assigned `TableStation` contract; add/use its own `ApproachPoint`, tuned `SeatPoint`, and `ExitPoint` rather than any hardcoded restaurant path.
+- Separate normal walking, controlled chair transition, and seated root locking. The controller will never call normal walking movement while a seating tween owns the transform.
+- Disable only the customer standing capsule during the controlled sit/seated interval; restore it only after the root has been moved to a clear exit marker during departure. Chair/table `StaticBody3D` layers and player behavior remain untouched.
+- Tune the local seat marker from real rendered poses, then encode that transform in the station scene so future stations can define their own anchors.
+
+## Ordered Slices
+
+1. **Anchors and movement ownership:** add an exit anchor, make the controller stop walking at approach, perform the alignment/seat tween after navigation, and root-lock while seated. Add a focused seating assertion. *(medium; 3 files)*
+2. **Collision-safe reverse transition:** disable the standing capsule through seating and restore it only after a controlled transition to the station exit anchor. Verify stand/leave and unchanged furniture collision. *(small; 2 files)*
+3. **Visual/regression validation:** capture front/side seating poses in the real main scene, tune marker placement against `SitDown`, then rerun sequence and smoke checks. *(small; tests/docs)*
+
+## Acceptance Checks
+
+- Customer stops at `ApproachPoint`, aligns smoothly, and reaches a station-defined front-half seated anchor without chair/backrest clipping.
+- While seated, the root remains at the seat anchor and neither walking nor standing collision moves it.
+- `StandUp` exits to a clear station-defined anchor before collision and normal walking are restored; player still cannot pass chair/table.
+
+## Risks and Mitigations
+
+| Risk | Impact | Mitigation |
+| --- | --- | --- |
+| Imported animation has root displacement | High | Render actual `SitDown`/`StandUp` poses and lock the CharacterBody root only after each clip completes. |
+| Capsule restoration overlaps furniture | High | Restore it only after the controlled move reaches the front `ExitPoint`. |
+| Existing progression regressions | Medium | Run focused seating and food/payment sequence harnesses after each slice. |
+
+## Result
+
+- Tuned `TableStationA/SeatPoint` from local `z=1.12` to `z=1.38` using Compatibility-rendered `SitDown` poses; this places the customer in the front half of the real chair rather than through its backrest.
+- Added station-local `ExitPoint` at `(0, 0, 1.88)`. The customer reaches it with a short controller-owned tween after `StandUp`, before the standing capsule and normal walk are restored.
+- `CustomerController` now treats approach, chair transfer, stable seated phases, and exit transfer as separate motion owners. It never mixes its normal `move_and_slide()` walk loop with a seating tween; seated phases pin only the character root, not skeleton animation.
+- The customer's standing `CollisionShape3D` is deferred-disabled during the intentional sit/seated period and re-enabled only after clearing the chair. Chair/table `StaticBody3D` nodes and player collision layers were not changed.
+- Godot parse, focused seating/exit, food delivery, payment, and 600-frame main-scene checks pass. Rendered front/side and stand/leave captures were inspected. The existing terminal-screen warning and Windows certificate-store warning remain unrelated to this seating change.
+
 # Current Task: Card Payment Terminal Flow
 
 ## Overview
