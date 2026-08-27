@@ -28,6 +28,8 @@ target_position = Vector3(0, 0, -3)
 collide_with_areas = true
 collide_with_bodies = true
 
+[node name="CarryAnchor" type="Node3D" parent="Head/Camera3D"]
+
 [node name="HUD" type="CanvasLayer" parent="."]
 
 [node name="Crosshair" type="Label" parent="HUD"]

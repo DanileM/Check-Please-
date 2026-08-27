@@ -1,7 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="PackedScene" path="res://assets/characters/customer_1.glb" id="1_customer"]
 [ext_resource type="Script" path="res://scripts/customer_controller.gd" id="2_script"]
+[ext_resource type="Script" path="res://scripts/customer_status_icon.gd" id="3_status_icon"]
+[ext_resource type="Script" path="res://scripts/customer_hand_props.gd" id="4_hand_props"]
+[ext_resource type="Script" path="res://scripts/order_bubble_3d.gd" id="5_order_bubble"]
 
 [sub_resource type="CapsuleShape3D" id="Capsule_customer"]
 radius = 0.36
@@ -28,3 +31,16 @@ outline_size = 10
 modulate = Color(1, 0.86, 0.35, 0)
 billboard = 1
 no_depth_test = true
+
+[node name="StatusIconAnchor" type="Node3D" parent="."]
+position = Vector3(0, 2.42, 0)
+
+[node name="CustomerStatusIcon" type="Node3D" parent="StatusIconAnchor"]
+script = ExtResource("3_status_icon")
+
+[node name="OrderBubble" type="Node3D" parent="StatusIconAnchor"]
+position = Vector3(0, 0.03, 0)
+script = ExtResource("5_order_bubble")
+
+[node name="HandProps" type="Node3D" parent="."]
+script = ExtResource("4_hand_props")

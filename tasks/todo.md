@@ -1,3 +1,232 @@
+# Card Payment Terminal Flow Task List
+
+## Task 27: Request Payment from the Existing Food Sequence
+
+**Description:** Add a state-driven payment request after the real `PutAwaySpoon` completion, plus a static banknote bubble, card attachment, and reusable cents-based order total.
+
+**Acceptance criteria:**
+
+- [x] One Burger produces a 200-cent total and the customer exposes only state-guarded payment-target APIs.
+- [x] The card follows the actual animated calling arm and the banknote bubble appears only while payment is requested/waiting.
+
+**Verification:** Focused RED/GREEN Godot sequence test and imported animation/bone audit.
+
+**Dependencies:** None.
+
+**Files likely touched:** `scripts/customer_controller.gd`, `scripts/customer_hand_props.gd`, `scripts/order_bubble_3d.gd`, `assets/ui/icons/banknote_payment.png`, `.tmp/verify_payment_flow.gd`.
+
+## Task 28: Build the Reusable Physical Payment Terminal
+
+**Description:** Wrap the terminal GLB without editing it, using real keypad nodes/hitboxes and a live per-instance screen controlled in integer cents.
+
+**Acceptance criteria:**
+
+- [x] Physical keypad hitboxes support digits, `<`, `X`, and `CHARGE`; the actual POS screen renders the current amount/result.
+- [x] $2.00 approves only for the current burger order; $1.00 remains open and correctable.
+
+**Verification:** Focused terminal controller Godot test and wrapper scene import.
+
+**Dependencies:** Task 27.
+
+**Files likely touched:** `scenes/props/payment_terminal.tscn`, `scripts/payment_terminal_controller.gd`, `.tmp/verify_payment_terminal.gd`.
+
+## Checkpoint: After Tasks 27-28
+
+- [x] Customer request and terminal input tests pass independently.
+- [x] No source GLB or existing food/review flow resource changed.
+
+## Task 29: Integrate Player Pickup and Payment Mode
+
+**Description:** Extend the existing single-item interaction controller with terminal carry, valid-customer targeting, tweened mouse mode, and cleanup.
+
+**Acceptance criteria:**
+
+- [x] Terminal pickup reuses the existing highlight/tooltip and stays at a side carry pose.
+- [x] Valid customer targeting shows exactly `Take Payment`; Escape cancels, and approval restores control/carry.
+
+**Verification:** Focused player/payment interaction harness.
+
+**Dependencies:** Tasks 27-28.
+
+**Files likely touched:** `scripts/player_controller.gd`, `scripts/customer_controller.gd`, `scripts/game.gd`, `scenes/restaurant/restaurant.tscn`, `.tmp/verify_payment_interaction.gd`.
+
+## Task 30: Validate the Complete Payment Departure Sequence
+
+**Description:** Exercise delivery, payment, review, stand, and departure in the real main scene; inspect the important visual states and regressions.
+
+**Acceptance criteria:**
+
+- [x] Correct payment reaches review/stand/leave only after approval; existing final-emotion rules remain active.
+- [x] Card, bubble, terminal screen/poses, phone, and tooltips are visually legible and no parse/runtime errors are introduced.
+
+**Verification:** Main-scene harness, headless import, focused regressions, and captured visual frames.
+
+**Dependencies:** Task 29.
+
+**Files likely touched:** `.tmp/verify_payment_flow.gd`, `.tmp/payment_visual_preview.gd`, `README.md`, `tasks/plan.md`, `tasks/todo.md`.
+
+## Checkpoint: Payment Flow Complete
+
+- [x] All focused payment, food, customer, player, and import checks pass.
+- [x] Source `credit_card.glb` and `terminal.glb` hashes match their baseline values.
+
+# Flat Sticker Icon Style Skill Task List
+
+## Task 25: Define the Reusable Icon-Style Skill
+
+**Description:** Add a discoverable user skill that guides generation or updating of the project’s static sticker-style UI/game icons without copying the reference symbols.
+
+**Acceptance criteria:**
+
+- [x] `SKILL.md` has valid, discriminating frontmatter and covers all requested use, exclusion, style, consistency, and prompt guidance.
+- [x] `agents/openai.yaml` makes normal automatic invocation and an explicit `$flat-sticker-icon-style` prompt discoverable.
+
+**Verification:** Run the bundled skill validator and inspect the resulting instructions.
+
+**Dependencies:** None.
+
+**Files likely touched:** `C:\\Users\\idknow\\.agents\\skills\\flat-sticker-icon-style\\SKILL.md`, `C:\\Users\\idknow\\.agents\\skills\\flat-sticker-icon-style\\agents\\openai.yaml`.
+
+## Task 26: Preserve the Visual References
+
+**Description:** Store the user-supplied primary icon-sheet and secondary burger reference next to the reusable instructions.
+
+**Acceptance criteria:**
+
+- [x] Both references are present at the paths linked by the skill.
+- [x] The primary sheet has precedence and no reference symbol is copied as a new icon.
+
+**Verification:** Verify paths and run the skill validator.
+
+**Dependencies:** Task 25.
+
+**Files likely touched:** `C:\\Users\\idknow\\.agents\\skills\\flat-sticker-icon-style\\references\\korean-culture-icon-sheet.png`, `C:\\Users\\idknow\\.agents\\skills\\flat-sticker-icon-style\\references\\burger-food-icon.png`.
+
+## Checkpoint: Flat Sticker Icon Style Skill
+
+- [x] The complete skill validates without placeholders.
+- [x] No project gameplay files or installed plugin cache files changed.
+
+# Playable Food Delivery Slice Task List
+
+## Task 21: Build the Reusable Order Bubble
+
+**Acceptance criteria:**
+
+- [x] A billboarded, fading order bubble supports one to five icon slots and currently renders a burger order above the customer.
+- [x] `ReadMenu` shows no head emoji; normal/impatient menu calls show the bubble, with impatience shake layered over float.
+
+**Verification:** Godot parse plus focused component/controller harness.
+
+**Dependencies:** None.
+
+**Files likely touched:** `scripts/order_bubble_3d.gd`, `scenes/characters/customer.tscn`, `scripts/customer_controller.gd`.
+
+## Task 22: Implement Burger Pickup and First-Person Carry
+
+**Acceptance criteria:**
+
+- [x] Burger-on-plate is accessible, targetable, outlined, and labels itself `Burger`.
+- [x] E transfers it to a stable, angled player carry anchor.
+
+**Verification:** focused interaction harness and main-scene smoke run.
+
+**Dependencies:** Task 21.
+
+**Files likely touched:** `scripts/pickup_item.gd`, `scenes/props/burger_plate.tscn`, `scenes/player/player.tscn`, `scripts/player_controller.gd`.
+
+## Checkpoint: After Tasks 21-22
+
+- [x] Scripts and scenes parse without errors.
+- [x] Bubble and pickup path work independently in the actual main scene.
+
+## Task 23: Place Food and Run the Customer Service Sequence
+
+**Acceptance criteria:**
+
+- [x] Table highlights and shows `Place` only for held food; placement snaps to `FoodSlot`.
+- [x] Delivery cancels the pending failure path, hides order bubble, runs the available smooth food sequence, removes burger, and exposes an empty-plate pickup while customer calls without menu.
+- [x] No-delivery impatience/review/exit path is still intact.
+
+**Verification:** focused delivery and timeout harnesses plus transition assertions.
+
+**Dependencies:** Tasks 21-22.
+
+**Files likely touched:** `scripts/table_station.gd`, `scenes/restaurant/table_station.tscn`, `scripts/customer_controller.gd`, `scripts/game.gd`, `scripts/player_controller.gd`.
+
+## Task 24: Validate and Document the Playable Slice
+
+**Acceptance criteria:**
+
+- [x] Main scene and focused test sequence run in Godot 4.7 with no new project errors.
+- [x] Captures confirm the readable order bubble and delivered-food state; focused interaction harnesses confirm carrying, placement, empty plate, and failure review.
+
+**Verification:** Godot parse, focused harness, main smoke, and inspected rendered frames.
+
+**Dependencies:** Task 23.
+
+**Files likely touched:** `README.md`, `tasks/plan.md`, `tasks/todo.md`.
+
+# Customer Presentation Refinement Task List
+
+## Task 18: Stabilize Hand Props and Reading Gaze
+
+**Acceptance criteria:**
+
+- [x] Menu and phone have named Godot-side attachment transforms, visible at a larger readable scale and stable across their relevant clips.
+- [x] `ReadMenu` uses the existing head-look solver toward the menu; calling states restore player tracking.
+
+**Verification:** focused controller assertions plus Godot script/scene parse.
+
+## Task 19: Unify Above-Head Feedback and Lock Review Emotion
+
+**Acceptance criteria:**
+
+- [x] Rating and status feedback use the one above-head anchor, with a subtle bob layered beneath optional shake.
+- [x] Final review score selects the specified emotion and remains unchanged during stand/leave.
+
+**Verification:** focused sequence test records review display and final face state.
+
+## Task 20: Render and Regress the Presentation Pass
+
+**Acceptance criteria:**
+
+- [x] Existing customer sequence, head look, and player controls remain valid.
+- [x] Actual Compatibility-rendered frames show the intended menu, phone, icon, and exit presentation.
+
+**Verification:** import, focused Godot harnesses, smoke run, and inspected render frames.
+
+# Customer Automatic Escalation Task List
+
+## Task 15: Build the Finite Escalation Flow
+
+**Acceptance criteria:**
+
+- [x] Uses the actual imported clips and one controller to execute all requested phases in order.
+- [x] Reading, normal call, and impatient call durations/speed are exported tuning values.
+- [x] The external menu follows `Menu_Hold`, while existing seating and head look stay intact.
+
+**Verification:** focused controller test observes each state and animation.
+
+## Task 16: Add Status and Impatience Feedback
+
+**Acceptance criteria:**
+
+- [x] The reusable world-space status component fills its supplied symbol upward and can shake without respawning.
+- [x] Reading shows a filling indicator; normal call keeps it full; impatient call shakes it and sets the existing angry face.
+
+**Verification:** runtime component/controller assertions and visual inspection.
+
+## Task 17: Add Review, Departure, and Regression Proof
+
+**Acceptance criteria:**
+
+- [x] Phone and one-star indication appear only during the actual `LeaveReview` phase.
+- [x] Customer performs `StandUp`, walks through the existing exit, and the automatic sequence completes once.
+- [x] Main scene and existing player/head-look functionality remain valid without source/import edits.
+
+**Verification:** Godot import, complete sequence harness, main-scene smoke/visual run, and file-status audit.
+
 # Customer Head Look Task List
 
 ## Task 12: Implement the Reusable Solver

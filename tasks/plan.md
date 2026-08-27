@@ -1,3 +1,208 @@
+# Current Task: Card Payment Terminal Flow
+
+## Overview
+
+Extend the existing successful burger path in place: after `Eat → PutAwaySpoon`, the seated customer asks to pay by waving the real `credit_card.glb`; the player picks up the real `terminal.glb`, enters a mouse-driven 3D terminal mode, inputs the order total in cents, and then resumes the existing review/departure sequence on approval.
+
+## Discovery
+
+- New immutable assets are `assets/props/credit_card.glb` (root `CreditCardRoot`) and `assets/props/terminal.glb` (root `TerminalRoot`). The terminal has real `POS_Key_0…9`, `POS_Key_Cancel`, `POS_Key_Clear`, `POS_Key_Charge`, and `POS_Screen` meshes.
+- The customer controller already owns the successful food sequence and stops only after `PutAwaySpoon → CallWaiter`; it has no price/order or payment state. The actual rig has `Arm_L_2`, `Arm_R_2`, and no separate hand bone, so the calling-arm attachment will use the arm demonstrated by the imported animation rather than an invented socket.
+- `PickupItem`, `Player/Head/Camera3D/CarryAnchor`, the interaction ray, highlights/tooltips, and the speech-bubble/status systems are all reusable. There is no current food price system.
+- The terminal source units are small and its real button/screen meshes are individually addressable. It needs a Godot wrapper for collision hitboxes and a per-instance screen material; neither GLB will be edited.
+
+## Architecture Decisions
+
+- Keep `CustomerController` as the single state authority. Add explicit request/wait/accepted states; terminal approval advances the state rather than setting a parallel collection of booleans.
+- Introduce a minimal `order_line_items` total inside the customer controller. It starts with one Burger line at 200 cents, sums quantities in integer cents, and is exposed only through payment-target APIs.
+- Make `PaymentTerminalController` extend `PickupItem`, preserving the existing carry, world tooltip, and outline language. Its wrapper owns physical button hitboxes, a runtime SubViewport screen, cents input, and a supplied payment target—not a hardcoded customer path.
+- Extend the existing `OrderBubble3D` with a static banknote asset and a `payment` icon ID. The new icon uses `flat-sticker-icon-style`; the same above-head float/fade behavior is retained.
+- Player interaction mode is a small extension of the current controller: normal carry remains side-biased; payment mode tweens the held terminal forward, unlocks the cursor, blocks FPS look/movement, and ray-clicks only wrapper hitboxes.
+
+## Ordered Slices
+
+1. **Payment request contract:** write a failing focused sequence test, add the banknote icon/bubble mapping, card attachment, cents order total, and `Eat → PutAwaySpoon → Request/WaitPayment` states. Verify the imported calling arm holds the card and payment bubble is above the head. *(medium; 5 files)*
+2. **Terminal asset and input:** add a terminal wrapper using actual model nodes, physical keypad hitboxes, a per-instance live screen, integer-cent editing, backspace/clear, wrong-amount rejection, and approved signal. Verify input/result logic in a focused Godot test. *(medium; 3 files)*
+3. **Player payment interaction:** add terminal pickup/side carry plus valid-customer targeting, existing-style outline/tooltip, central tween, cursor/control lock, click routing, cancellation, and cleanup. Verify wrong and correct payment flows without changing source GLBs. *(medium; 4 files)*
+4. **End-to-end regression:** run food delivery through terminal approval, `LeaveReview`, `StandUp`, and exit; inspect terminal/card/bubble/carry views and rerun existing customer, player, and import tests. *(small; tests/docs)*
+
+## Acceptance Checks
+
+- The food path has actual animation completion boundaries: `Eat → PutAwaySpoon → CallWaiter + card → WaitPayment → LeaveReview → StandUp → Leave`.
+- Payment input is only via physical terminal hitboxes, is stored/validated in cents, and a wrong value leaves card/customer waiting untouched.
+- The player may carry only the terminal, receives the exact `Take Payment` target text only when the customer is waiting, and returns to normal control/carry after approval or Escape.
+- Both new GLB source files remain byte-identical; payment feedback stays above the customer head and uses the project’s static icon style.
+
+## Risks and Mitigations
+
+| Risk | Impact | Mitigation |
+| --- | --- | --- |
+| Calling arm is misidentified | High | Sample the actual imported CallWaiter bone transforms before selecting the card attachment. |
+| Model screen UV orientation differs | Medium | Use an isolated wrapper material and visually inspect the live SubViewport before finalizing. |
+| Terminal button areas interfere with pickup | Medium | Disable keypad colliders while carried normally; enable only in explicit terminal interaction mode on a dedicated layer. |
+| Existing failure/review flow regresses | High | Preserve its branch and run its current focused regression tests after each relevant slice. |
+
+## Result
+
+- Completed in four verified slices: the customer now uses state-guarded integer-cents payment APIs after `PutAwaySpoon`; a new reusable terminal wrapper supplies real keypad hitboxes and a live screen without altering its GLB; player input cleanly switches between carry and payment modes; and the full flow reaches the existing review/departure path only after `$2.00` approval.
+- The banknote bubble reuses the above-head presentation and the generated static `banknote_payment.png`; the card uses a Godot-side attachment/material treatment on the confirmed `Arm_R_2` calling arm. The terminal's live display uses a thin runtime quad over its imported screen so it remains visible in GL Compatibility.
+- Focused request, keypad, player-mode, complete payment, and updated food-delivery regressions pass. A Compatibility-rendered preview confirms the bubble and the centered `$2.00` terminal screen.
+
+# Current Task: Flat Sticker Icon Style Skill
+
+## Overview
+
+Create one discoverable, reusable instruction skill for the project’s static food, order, status, reaction, speech-bubble, restaurant, and item icon assets. It will preserve the supplied Korean icon sheet as the primary visual reference and the supplied burger as a food-specific secondary reference; it will not generate an icon in this task.
+
+## Discovery
+
+- The environment discovers user-authored skills from `C:\\Users\\idknow\\.agents\\skills`, where each skill is a folder containing `SKILL.md` and optionally `agents/openai.yaml`.
+- No existing skill in that directory matches icon, sticker, flat, or image-generation work, and no root skills index or manifest is present to update.
+- The installed `agent-skills` package is a cache and is not the correct location for a user-authored reusable skill.
+
+## Architecture Decisions
+
+- Keep the new skill self-contained, with concise automatic-selection metadata and a matching UI metadata file.
+- Preserve the two user-provided images beside the instructions as local references so later requests retain the source-of-truth style even when the current chat attachments are unavailable.
+- Make the Korean icon sheet primary for the visual grammar; use the burger only to clarify food-icon construction. The skill explicitly prohibits copying their individual symbols.
+
+## Ordered Slices
+
+1. **Skill definition:** create `flat-sticker-icon-style` with trigger conditions, visual rules, prompt template, generation workflow, and a consistency/QA checklist. Verify its frontmatter and metadata. *(small; 2 files)*
+2. **Reference preservation and discovery:** add the two supplied reference images beneath the skill and validate the completed directory with the installed skill validator. *(small; 2 assets)*
+
+## Acceptance Checks
+
+- The skill is automatically discoverable from the user skill root and clearly targets only the requested sticker-style UI/game-icon work.
+- It records every stated visual trait, the first-anchor-icon workflow, reference precedence, and the supplied prompt template.
+- It contains durable local copies of both style references, has no scaffold placeholders, and passes the skill validator.
+
+## Result
+
+- Added the discoverable `flat-sticker-icon-style` user skill with compact instructions, UI metadata, and preserved local primary/secondary visual references.
+- The built-in Python validator could not run because this environment has no runnable Python interpreter. Equivalent static checks passed: required files, frontmatter keys/name, metadata, reference links, trigger/prompt/anchor guidance, and SHA-256 equality of both copied images.
+
+# Current Task: Playable Food Delivery Slice
+
+## Discovery
+
+- `Game` wires one `CustomerController`, `TableStationA`, player camera, and entry/exit markers. `Player/Head/Camera3D/InteractRay` is already the correct first-person targeting point.
+- `CustomerController` owns the complete finite failure path and its state transitions. It already has configurable read/wait timings, reusable above-head `CustomerStatusIcon`, and additive head targeting.
+- `TableStationA` provides a real `FoodSlot` marker but has no interaction or placed-food ownership yet. The restaurant has a playable table and an accessible floor space near the entry-side service path.
+- Existing user-provided assets include `assets/food/burger.glb` and `assets/props/plate.glb`; neither source asset will be modified.
+- Runtime audit confirms the imported animation set includes `Walk`, `SitDown`, `StandUp`, `TakeMenu`, `ReadMenu`, `CallWaiterMenu`, `PutAwayMenu`, `TakeSpoon`, `Eat`, `PutAwaySpoon`, `CallWaiter`, and `LeaveReview`. `Spoon_R` is the actual spoon socket.
+
+## Architecture Decisions
+
+- Keep `CustomerController` as the only customer state authority. Add explicit delivery/eating states and a single delivered-food hook rather than a parallel state machine.
+- Add three small reusable world components: a world-space order bubble, a pickup/carry item, and a table placement target. Player interaction remains camera-ray based and asks those components for tooltip/highlight/action behavior.
+- Put the bubble and the rating in the existing above-head area. Reading has no head icon; the bubble owns its fade/reveal/float and the status icon remains responsible for rating feedback.
+- Instantiate burger + plate only from independent Godot scenes. The world item transfers to a camera-local carry anchor, then to `FoodSlot`, so it never drifts in animation/world space.
+- Preserve the existing timeout failure path. Food delivery is a separate interruption that transitions through menu put-away, available spoon/eating presentation, burger removal, and no-menu waiter call.
+
+## Ordered Slices
+
+1. **Order bubble (medium; 3 files):** add the reusable world-space bubble component, attach it above the customer, and drive its burger order only during menu waiter calls. Verify no menu-reading emoji remains, with fade/reveal/float and impatience shake.
+2. **Pickup and carry path (medium; 4 files):** add reusable pickup-item/highlight behavior plus a burger-on-plate scene and a camera-local carry anchor. Verify ray targeting changes the tooltip, highlights the plate, and transfers it into the held anchor.
+3. **Table placement and food state path (large vertical slice; 5 files):** make `FoodSlot` a conditional place target, transfer the plate to it, and add the delivered-food sequence plus empty-plate pickup. Verify delivery interrupts waiting cleanly and retains the non-delivery failure route.
+4. **Runtime validation and polish (small; 3 files):** add focused Godot assertions, run the playable main scene and visual captures, fix transition/parse issues, and document the final flow.
+
+## Acceptance Checks
+
+- `ReadMenu` has no indicator; `CallWaiterMenu` shows a floating burger bubble, and the bubble fades out on delivery/failure.
+- Looking at burger plate shows `Burger`, pickup places it in a stable first-person carry position, and the table only offers `Place` while carrying a placeable item.
+- Delivery follows the ordered, blended sequence; burger disappears after configured eating duration, leaving a pickupable empty plate and a no-menu waiter call.
+- Missing delivery still produces angry impatience, a shaking bubble, 1/5 review feedback above the head, and sad departure.
+
+## Risks and Mitigations
+
+| Risk | Impact | Mitigation |
+|---|---|---|
+| Food animation/socket names differ from assumptions | Medium | Runtime-audit the imported clip and bone lists before wiring delivery; confirmed `TakeSpoon`, `Eat`, `PutAwaySpoon`, and `Spoon_R`. |
+| Interaction ray hits child colliders | Medium | Resolve interaction component by walking the collider parent chain. |
+| Concurrent old automatic await resumes after delivery | High | Use delivery-specific flag/token checks and consume the same wait interruption before entering food states. |
+
+## Result
+
+- Added `OrderBubble3D`: a procedural, resolution-independent SubViewport bubble with a 1–5 slot row, a static transparent burger asset now, bottom-up accent reveal, fade, billboard, float, and optional impatience shake. The icon row is centered in the body and the tail is drawn as one continuous silhouette.
+- Added `PickupItem` and `burger_plate.tscn`. The item exposes world tooltip/highlight, carry and table transfer, burger visibility, and empty-plate reuse without changing either GLB asset.
+- `PlayerController` now resolves interactables from its existing camera ray. `E` transfers burger to `CarryAnchor`, then lets the correct waiting table display `Place` and snap the item to `FoodSlot`.
+- `CustomerController` accepts food only while calling with the menu, interrupts the timeout safely, uses the confirmed `PutAwayMenu -> TakeSpoon -> Eat -> PutAwaySpoon -> CallWaiter` flow, and exposes the empty plate. The untouched no-delivery flow still shakes the order bubble, submits 1/5, and exits sad.
+- Focused component, interaction, table, delivery, escalation, presentation, head-look, and player-input checks pass. Compatibility captures were inspected for the readable burger bubble and the delivered-food state; carry/placement and empty-plate transfer are covered by the focused interaction harness.
+
+# Current Task: Customer Presentation Refinement
+
+## Discovery
+
+- `CustomerController` owns the finite state flow, face transforms, and the independent menu/phone attachments under the imported skeleton.
+- `HeadLookModifier` already applies a post-animation additive yaw/pitch offset to `Head_2`; its target can be switched without changing the rig or Blender animation.
+- `CustomerStatusIcon` already owns billboard, fill, and shake below `StatusIconAnchor`; `EmotionAnchor` remains a separate temporary-label anchor.
+- `MenuAttachment` uses `Menu_Hold` and `PhoneAttachment` uses `Phone_Hold`; presentation offsets need to remain local to these sockets. The former `OneStarReview` child label explains why the prior rating appeared too low.
+
+## Architecture Decisions
+
+- Keep the controller as the state authority. Add small state-aware presentation helpers rather than a second controller or Blender changes.
+- Add configurable transform presets beneath the two existing `BoneAttachment3D` nodes; apply them on state entry so props remain bone-relative and stable throughout the imported clips.
+- Reuse the existing head-look modifier: set its target to a local menu marker while reading, restore the player camera in calling states, and disable it elsewhere.
+- Consolidate transient feedback under `StatusIconAnchor`; let `CustomerStatusIcon` support a review symbol, persistent display, bobbing, and shake layering.
+- Store the final review score on the controller and apply one locked emotion when review is submitted; do not reset it during stand/leave.
+
+## Ordered Slices
+
+1. **Head-target and prop foundation:** add safe menu/phone attachment references and preset transforms; switch the existing additive head solver to the menu marker only in `STUDY_MENU`. Verify parse and state/head-target assertions. *(3 files, medium)*
+2. **Feedback and review lock:** move review display to the head-status component, add subtle bobbing, and lock the final face from the configurable review score. Verify status state, float/shake composition, and leaving emotion. *(3 files, medium)*
+3. **Visual regression:** render the actual main scene through the existing preview camera; inspect menu/read, calling, review, and exit frames. Then run existing sequence, head-look, player-input, and import checks. *(tests/docs, small)*
+
+## Acceptance Checks
+
+- Menu and phone remain socketed to their original bones, visibly larger, tilted, and hidden outside their intended states.
+- Reading uses the existing additive head solver toward a menu-local target; both waiter-call states return to the player target.
+- All feedback, including the final rating, is above the head and bobs gently; impatient shaking layers over that motion.
+- `final_review_score` selects and locks sad (<2), neutral (2–3), or happy (>3) through exit.
+
+## Result
+
+- Added `CustomerHandProps`, which keeps independent props attached to their original bones while applying explicit readable menu and portrait-phone presets.
+- `ReadMenu` reuses the existing post-animation head solver toward `MenuReadTarget`; the normal/impatient call states restore the player camera target.
+- Rating/status feedback now shares `StatusIconAnchor`, bobs at 0.026 m, preserves impatience shake, and keeps the review score visible through departure. The 1/5 test path locks the sad face.
+- Focused tests, prior customer/head/player tests, a 600-frame main smoke run, and a Compatibility render all pass.
+
+# Current Task: Customer Automatic Escalation
+
+## Discovery
+
+- The single controller is `scripts/customer_controller.gd`; `Game` starts it automatically after supplying the station, entry/exit points, and player camera.
+- The imported `AnimationPlayer` and `Skeleton3D` live below `Visual/CustomerModel`. The actual clips are `Walk`, `SitDown`, `StandUp`, `TakeMenu`, `ReadMenu`, `CallWaiterMenu`, `PutAwayMenu`, and `LeaveReview`.
+- `Menu_Hold` and `Phone_Hold` are the prop bones. `menu.glb` and `phone.glb` are independent imported scenes and expose no prop animation of their own.
+- Existing head tracking is a post-animation `SkeletonModifier3D` on `Head_2`; calling states must continue to enable it.
+
+## Architecture Decisions
+
+- Extend the existing controller instead of adding a second NPC or service system. The default sequence is finite: it ends after the customer exits.
+- Keep timing and animation-speed tuning as exported variables on the controller. Clip completion remains authoritative for non-looping clips.
+- Attach the independent menu and phone to their respective named bones; visibility is driven only by the corresponding imported animation phase.
+- Add one small reusable world-space status-icon component. It owns bottom-up fill and shake, while the controller owns when each state displays it.
+- Keep a future `on_waiter_interaction()` hook, but add no input binding or waiter-service implementation.
+
+## Ordered Slices
+
+1. **Sequence foundation (RED/GREEN):** write the focused escalation test, then add state/configuration support and external menu attachment through `TakeMenu`, reading, normal call, and put-away.
+2. **Escalation feedback:** add a reusable filled/shaking status icon; integrate impatient call, angry face, and exact timeouts while preserving `CallWaiterMenu` head look.
+3. **Review and departure:** attach/show phone and one-star indicator for `LeaveReview`; run `StandUp`, walk to the existing exit, and end the sequence.
+4. **Validation and polish:** run Godot import/parse and a full controller harness, check the playable main scene and visible state transitions, then update project documentation.
+
+## Acceptance Checks
+
+- The state order is deterministic: walk → sit → menu/read → normal call → impatient call → put away → review → stand → exit.
+- `ReadMenu` runs for the configured duration with an upward-filling status symbol; impatient call uses 1.6× animation speed, angry face, and a shaking full icon.
+- Menu/phone are separate assets attached to `Menu_Hold`/`Phone_Hold`; the one-star review indication is visible only during review.
+- No GLB/import file changes, no player input interaction, no extra customer controller, and no change to seating/head-look anatomy.
+
+## Result
+
+- All four slices are complete. The focused Godot harness observes every state, both menu-call phases retaining head look, the filling/shaking icon states, the 1.6× impatient animation speed, external prop visibility, review indicator, and the single completed exit.
+- A Compatibility-rendered main-scene capture visually confirms the filling book, call feedback, one-star review, stand-up, and departure.
+
 # Current Task: Additive Customer Head Look
 
 ## Discovery

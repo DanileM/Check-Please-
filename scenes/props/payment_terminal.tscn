@@ -1,0 +1,128 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/payment_terminal_controller.gd" id="1_terminal"]
+[ext_resource type="PackedScene" path="res://assets/props/terminal.glb" id="2_terminal_model"]
+
+[sub_resource type="BoxShape3D" id="TerminalCollision"]
+size = Vector3(0.13, 0.18, 0.055)
+
+[sub_resource type="BoxShape3D" id="KeyCollision"]
+size = Vector3(0.020, 0.015, 0.016)
+
+[sub_resource type="BoxShape3D" id="ChargeCollision"]
+size = Vector3(0.058, 0.015, 0.016)
+
+[node name="PaymentTerminal" type="Node3D"]
+scale = Vector3(3.2, 3.2, 3.2)
+script = ExtResource("1_terminal")
+display_name = "Take Payment"
+item_kind = &"payment_terminal"
+placeable = false
+tooltip_height = 0.32
+carry_position = Vector3(0.43, -0.36, -0.86)
+carry_rotation_degrees = Vector3(-12, -28, 8)
+carry_scale = Vector3(4, 4, 4)
+interaction_position = Vector3(-0.05, -0.13, -0.7)
+interaction_rotation_degrees = Vector3(-9, 0, 0)
+interaction_scale = Vector3(3, 3, 3)
+
+[node name="Terminal" parent="." instance=ExtResource("2_terminal_model")]
+
+[node name="InteractBody" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractBody"]
+position = Vector3(0, 0.052, 0)
+shape = SubResource("TerminalCollision")
+
+[node name="ButtonHitboxes" type="Node3D" parent="."]
+
+[node name="Key1" type="Area3D" parent="ButtonHitboxes"]
+position = Vector3(-0.027, 0.0595, 0.0185)
+metadata/terminal_action = "1"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ButtonHitboxes/Key1"]
+shape = SubResource("KeyCollision")
+
+[node name="Key2" type="Area3D" parent="ButtonHitboxes"]
+position = Vector3(0, 0.0595, 0.0185)
+metadata/terminal_action = "2"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ButtonHitboxes/Key2"]
+shape = SubResource("KeyCollision")
+
+[node name="Key3" type="Area3D" parent="ButtonHitboxes"]
+position = Vector3(0.027, 0.0595, 0.0185)
+metadata/terminal_action = "3"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ButtonHitboxes/Key3"]
+shape = SubResource("KeyCollision")
+
+[node name="Key4" type="Area3D" parent="ButtonHitboxes"]
+position = Vector3(-0.027, 0.0375, 0.0185)
+metadata/terminal_action = "4"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ButtonHitboxes/Key4"]
+shape = SubResource("KeyCollision")
+
+[node name="Key5" type="Area3D" parent="ButtonHitboxes"]
+position = Vector3(0, 0.0375, 0.0185)
+metadata/terminal_action = "5"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ButtonHitboxes/Key5"]
+shape = SubResource("KeyCollision")
+
+[node name="Key6" type="Area3D" parent="ButtonHitboxes"]
+position = Vector3(0.027, 0.0375, 0.0185)
+metadata/terminal_action = "6"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ButtonHitboxes/Key6"]
+shape = SubResource("KeyCollision")
+
+[node name="Key7" type="Area3D" parent="ButtonHitboxes"]
+position = Vector3(-0.027, 0.0155, 0.0185)
+metadata/terminal_action = "7"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ButtonHitboxes/Key7"]
+shape = SubResource("KeyCollision")
+
+[node name="Key8" type="Area3D" parent="ButtonHitboxes"]
+position = Vector3(0, 0.0155, 0.0185)
+metadata/terminal_action = "8"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ButtonHitboxes/Key8"]
+shape = SubResource("KeyCollision")
+
+[node name="Key9" type="Area3D" parent="ButtonHitboxes"]
+position = Vector3(0.027, 0.0155, 0.0185)
+metadata/terminal_action = "9"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ButtonHitboxes/Key9"]
+shape = SubResource("KeyCollision")
+
+[node name="KeyCancel" type="Area3D" parent="ButtonHitboxes"]
+position = Vector3(-0.027, -0.0065, 0.0185)
+metadata/terminal_action = "X"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ButtonHitboxes/KeyCancel"]
+shape = SubResource("KeyCollision")
+
+[node name="Key0" type="Area3D" parent="ButtonHitboxes"]
+position = Vector3(0, -0.0065, 0.0185)
+metadata/terminal_action = "0"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ButtonHitboxes/Key0"]
+shape = SubResource("KeyCollision")
+
+[node name="KeyClear" type="Area3D" parent="ButtonHitboxes"]
+position = Vector3(0.027, -0.0065, 0.0185)
+metadata/terminal_action = "<"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ButtonHitboxes/KeyClear"]
+shape = SubResource("KeyCollision")
+
+[node name="Charge" type="Area3D" parent="ButtonHitboxes"]
+position = Vector3(0, -0.02895, 0.0185)
+metadata/terminal_action = "CHARGE"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ButtonHitboxes/Charge"]
+shape = SubResource("ChargeCollision")
