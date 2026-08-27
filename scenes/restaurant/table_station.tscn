@@ -1,8 +1,8 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene format=3 uid="uid://dxx0bwwmgnyui"]
 
-[ext_resource type="PackedScene" path="res://assets/furniture/table.glb" id="1_table"]
-[ext_resource type="PackedScene" path="res://assets/furniture/chair.glb" id="2_chair"]
-[ext_resource type="Script" path="res://scripts/table_station.gd" id="3_script"]
+[ext_resource type="PackedScene" uid="uid://d1tvw3rtgk51r" path="res://assets/furniture/table.glb" id="1_table"]
+[ext_resource type="PackedScene" uid="uid://br50qltotyuok" path="res://assets/furniture/chair.glb" id="2_chair"]
+[ext_resource type="Script" uid="uid://dy2v5yqxix18n" path="res://scripts/table_station.gd" id="3_script"]
 
 [sub_resource type="BoxShape3D" id="TableCollision"]
 size = Vector3(0.82, 0.78, 0.82)
@@ -10,41 +10,41 @@ size = Vector3(0.82, 0.78, 0.82)
 [sub_resource type="BoxShape3D" id="ChairCollision"]
 size = Vector3(0.54, 0.82, 0.54)
 
-[node name="TableStation" type="Node3D" groups=["table_station"]]
+[node name="TableStation" type="Node3D" unique_id=345171796 groups=["table_station"]]
 script = ExtResource("3_script")
 
-[node name="Table" parent="." instance=ExtResource("1_table")]
-position = Vector3(0, 0.735, 0)
+[node name="Table" parent="." unique_id=1150179532 instance=ExtResource("1_table")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.735, 0)
 
-[node name="TableBody" type="StaticBody3D" parent="."]
+[node name="TableBody" type="StaticBody3D" parent="." unique_id=1894915481]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="TableBody"]
-position = Vector3(0, 0.39, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TableBody" unique_id=622440412]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.39, 0)
 shape = SubResource("TableCollision")
 
-[node name="ChairCustomer" parent="." instance=ExtResource("2_chair")]
-position = Vector3(0, 0, 1.12)
-rotation = Vector3(0, 3.141593, 0)
+[node name="ChairCustomer" parent="." unique_id=1938794212 instance=ExtResource("2_chair")]
+transform = Transform3D(1, 0, 2.3841858e-07, 0, 1, 0, -2.3841858e-07, 0, 1, 0, 0, 1.12)
 
-[node name="ChairBodyCustomer" type="StaticBody3D" parent="."]
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ChairBodyCustomer"]
-position = Vector3(0, 0.41, 1.12)
+[node name="ChairBodyCustomer" type="StaticBody3D" parent="." unique_id=1052368884]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChairBodyCustomer" unique_id=1023559445]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.41, 1.12)
 shape = SubResource("ChairCollision")
 
-[node name="ApproachPoint" type="Marker3D" parent="."]
-position = Vector3(0, 0, 1.72)
+[node name="ApproachPoint" type="Marker3D" parent="." unique_id=420862832]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.72)
 
-[node name="SeatPoint" type="Marker3D" parent="."]
-position = Vector3(0, 0, 1.12)
+[node name="SeatPoint" type="Marker3D" parent="." unique_id=1443425761]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.12)
 
-[node name="LookPoint" type="Marker3D" parent="."]
-position = Vector3(0, 0.72, 0)
+[node name="LookPoint" type="Marker3D" parent="." unique_id=1314072263]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, 0)
 
-[node name="WaiterPoint" type="Marker3D" parent="."]
-position = Vector3(0, 0, -1.30)
+[node name="WaiterPoint" type="Marker3D" parent="." unique_id=2146086367]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.3)
 
-[node name="FoodSlot" type="Marker3D" parent="."]
-position = Vector3(-0.22, 0.84, 0.04)
+[node name="FoodSlot" type="Marker3D" parent="." unique_id=561305208]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.22, 0.84, 0.04)
 
-[node name="DrinkSlot" type="Marker3D" parent="."]
-position = Vector3(0.28, 0.84, 0.02)
+[node name="DrinkSlot" type="Marker3D" parent="." unique_id=648675041]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.28, 0.84, 0.02)
