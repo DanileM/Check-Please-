@@ -113,6 +113,7 @@ func _build_tooltip() -> void:
 
 	_tooltip = InteractionTooltip.create_label(&"WorldTooltip", display_name, tooltip_height)
 	add_child(_tooltip)
+	_tooltip.follow_target(self, tooltip_height)
 
 
 func _cache_colliders(node: Node) -> void:

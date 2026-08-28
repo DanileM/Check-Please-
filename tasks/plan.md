@@ -45,6 +45,15 @@ Standardize the real first-person interaction loop around object-name world labe
 | Retraction self-hits or fights terminal tween | High | Exclude player/held colliders, use only default obstacle layer, and keep explicit terminal payment pose separate from ordinary carry retraction. |
 | Input migration triggers a keypad click on entry | Medium | Consume LMB before payment mode is enabled and test first click independently. |
 
+## Result
+
+- `InteractionTooltip` is one 26px/5px-outline Label3D configuration. It follows a top-level anchor with unit scale, so imported prop scale cannot enlarge physical names. Labels are exactly `Burger`, `Plate`, `Payment Terminal`, and `Table`; customer context remains `Take Payment`.
+- `InteractionOutlineController` renders white clones only into a dedicated mask layer and derives a screen-space outer edge. A multi-mesh terminal therefore has one thin yellow silhouette without button/screen outlines. The normal camera never renders the clone layer.
+- Terminal wrapper now uses `assets/props/terminal.glb` `POS_Screen` and exact `POS_Key_*` transforms. Its interactive pose was computed from the live screen basis, producing an upright, readable keypad and live `$2.00` screen. Every keypad hitbox was ray-tested; integer-cent payment flow remains intact.
+- Credit-card root joins `comic_outline_exempt`; `ComicStyle` skips that subtree while retaining its Godot-side material treatment.
+- Player carry now samples a padded sphere along the intended carry path against gameplay bodies, excluding the Player. Burger and terminal smoothly retract at 18/s and restore at 10/s. The terminal close pose uses the same guard during payment mode.
+- Validated with Godot 4.7 editor parse, object/input contract, outline mask, terminal layout, all 13 key rays, cents approval, wall/NPC retraction, food delivery, payment departure, customer presentation, and a 600-frame main-scene smoke. Compatibility captures were inspected for terminal screen/keypad, silhouette, card, and retracted burger.
+
 # Current Task: Controlled Customer Seating Alignment
 
 ## Overview

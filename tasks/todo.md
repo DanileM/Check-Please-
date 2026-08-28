@@ -6,8 +6,8 @@
 
 **Acceptance criteria:**
 
-- [ ] Burger, Plate, and Payment Terminal labels use the same small style and exact object names.
-- [ ] E only picks up; LMB only places/uses an already held item, while customer payment remains `Take Payment`.
+- [x] Burger, Plate, and Payment Terminal labels use the same small style and exact object names.
+- [x] E only picks up; LMB only places/uses an already held item, while customer payment remains `Take Payment`.
 
 **Verification:** Focused player-input harness and real scene tooltip inspection.
 
@@ -21,8 +21,8 @@
 
 **Acceptance criteria:**
 
-- [ ] Burger/table/terminal show one thin outer yellow contour without interior component borders.
-- [ ] Existing black comic outlines remain independent.
+- [x] Burger/table/terminal show one thin outer yellow contour without interior component borders.
+- [x] Existing black comic outlines remain independent.
 
 **Verification:** Runtime mask-controller assertions plus front/side/rear terminal captures.
 
@@ -36,8 +36,8 @@
 
 **Acceptance criteria:**
 
-- [ ] Every payment key/screen aligns to the new model and cents entry/approval remain correct.
-- [ ] Card retains its materials without a black hull outline.
+- [x] Every payment key/screen aligns to the new model and cents entry/approval remain correct.
+- [x] Card retains its materials without a black hull outline.
 
 **Verification:** Focused keypad test plus Compatibility terminal/card capture.
 
@@ -51,8 +51,8 @@
 
 **Acceptance criteria:**
 
-- [ ] Burger and terminal retract near world/furniture/NPC obstacles, never self-hit, then smoothly restore.
-- [ ] Explicit terminal payment pose stays readable and does not invoke world pickup.
+- [x] Burger and terminal retract near world/furniture/NPC obstacles, never self-hit, then smoothly restore.
+- [x] Explicit terminal payment pose stays readable and does not invoke world pickup.
 
 **Verification:** Focused physics-query harness and real camera captures.
 
@@ -66,8 +66,8 @@
 
 **Acceptance criteria:**
 
-- [ ] All focused regressions and a main-scene smoke run pass.
-- [ ] Visual captures cover tooltips, terminal keypad/screen, selection outline, card, and retraction.
+- [x] All focused regressions and a main-scene smoke run pass.
+- [x] Visual captures cover tooltips, terminal keypad/screen, selection outline, card, and retraction.
 
 **Verification:** Godot 4.7 parse/main run plus focused interaction, food, and payment tests.
 
@@ -75,8 +75,8 @@
 
 ## Checkpoint: Interaction Presentation Complete
 
-- [ ] Object naming/input contract, silhouette outline, terminal/card, and carry retraction are verified.
-- [ ] No new project parse/runtime errors.
+- [x] Object naming/input contract, silhouette outline, terminal/card, and carry retraction are verified.
+- [x] No new project parse/runtime errors.
 
 # Controlled Customer Seating Alignment Task List
 
