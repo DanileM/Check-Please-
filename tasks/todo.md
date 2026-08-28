@@ -563,3 +563,29 @@
 **Dependencies:** Tasks 3–7
 
 **Estimated scope:** Medium
+# Task 38: Repair payment interaction regressions
+
+**Description:** Keep the existing food/payment flow while correcting the real card visual, contextual customer targeting, tooltip bounds/range, terminal carry pose, and held-item collision response.
+
+**Acceptance criteria:**
+- [ ] Only `credit_card.glb` is visible from `Arm_R_2` during `WAIT_FOR_PAYMENT`.
+- [ ] Pickup hover is 7.5m; table/payment held actions stay 3.0m.
+- [ ] Pickup labels use complete visual bounds plus one small shared margin.
+- [ ] Held-item retraction never exceeds 0.11m and terminal face remains camera-facing.
+
+**Verification:**
+- [ ] Focused Godot card, targeting, tooltip/range, carry, terminal, and payment-flow scripts pass.
+- [ ] Main scene runs headlessly without script errors.
+
+**Dependencies:** None
+
+**Files likely touched:**
+- `scripts/customer_hand_props.gd`
+- `scripts/customer_controller.gd`
+- `scenes/characters/customer.tscn`
+- `scripts/player_controller.gd`
+- `scripts/interaction_tooltip.gd`
+- `scripts/pickup_item.gd`
+- `scenes/props/payment_terminal.tscn`
+
+**Estimated scope:** Medium: 5-7 files

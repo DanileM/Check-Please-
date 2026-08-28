@@ -58,6 +58,7 @@ enum SeatingState {
 
 @onready var visual: Node3D = $Visual
 @onready var standing_collision_shape: CollisionShape3D = $CollisionShape3D
+@onready var payment_interaction_area: Area3D = $PaymentInteractionArea
 @onready var model_root: Node3D = $Visual/CustomerModel
 @onready var emotion_anchor: Node3D = $EmotionAnchor
 @onready var emotion_label: Label3D = $EmotionAnchor/EmotionLabel
@@ -112,6 +113,7 @@ func _ready() -> void:
     emotion_label.modulate.a = 0.0
     emotion_label.visible = false
     _set_standing_collision_enabled(true)
+    _set_payment_interaction_target_enabled(false)
 
 
 func configure(station: TableStation, entry: Marker3D, exit: Marker3D) -> void:
@@ -343,6 +345,7 @@ func _run_review_and_departure(review_state: SeatingState) -> void:
 
 func _set_seating_state(next_state: SeatingState) -> void:
     seating_state = next_state
+    _set_payment_interaction_target_enabled(next_state == SeatingState.WAIT_FOR_PAYMENT)
     var state_target: Node3D = head_look_target
     var should_track := (
         next_state == SeatingState.CALL_WAITER
@@ -360,6 +363,14 @@ func _set_seating_state(next_state: SeatingState) -> void:
         head_look_modifier.set_head_look_target(state_target)
     set_head_look_enabled(should_track)
     seating_state_changed.emit(SeatingState.keys()[next_state])
+
+
+func _set_payment_interaction_target_enabled(enabled: bool) -> void:
+    if payment_interaction_area == null:
+        return
+    payment_interaction_area.collision_layer = 1 if enabled else 0
+    payment_interaction_area.monitoring = enabled
+    payment_interaction_area.monitorable = enabled
 
 
 func set_head_look_target(target: Node3D) -> void:

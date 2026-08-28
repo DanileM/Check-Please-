@@ -14,7 +14,6 @@ script = ExtResource("1_pickup")
 display_name = "Burger"
 item_kind = &"burger_plate"
 placeable = true
-tooltip_height = 0.42
 carry_position = Vector3(0.28, -0.3, -0.82)
 carry_rotation_degrees = Vector3(-7, -16, 4)
 

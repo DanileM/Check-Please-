@@ -1,5 +1,34 @@
 # Current Task: Interaction Presentation, Carry, and New Terminal Integration
 
+## Current Task: Payment Interaction Regression Fix Pass
+
+### Overview
+
+Repair the live payment/pickup presentation without replacing its architecture: render only the imported payment card in the animated calling arm, keep held-item collision response subtle, correct terminal poses, restore contextual payment targeting, and unify world-pickup tooltip bounds/range.
+
+### Discovery
+
+- `CustomerHandProps` already instances `res://assets/props/credit_card.glb` on `Arm_R_2`, the arm with the larger `CallWaiter` rotation delta (1.23 rad vs 0.57 rad left), but it also overrides the GLB material colors and adds procedural `PaymentCardReadableFace` / `PaymentCardReadableChip` meshes. Those overlays are the wrong temporary card visual.
+- `PlayerController` owns the only interaction ray and clamps it globally at 3.0m. It traverses collider parents but has no dedicated payment-range gate or payment target volume. Its carry solver samples all the way to `held_item_min_distance = 0.30`, allowing up to roughly 0.67m of backward movement.
+- `InteractionTooltip` receives a manual local height. Imported terminal scale makes its 0.32 local height nearly 1.0m in world space, while the burger uses a separate 0.42 height.
+- The new `terminal.glb` wrapper uses the correct keypad/screen hierarchy; its close interaction pose is readable, but the ordinary carry pose still uses a legacy rear-facing rotation.
+
+### Ordered Slices
+
+1. **Real card in animated hand:** remove temporary card geometry/material replacements and tune the existing `Arm_R_2` BoneAttachment transform. Verify the GLB-only prop moves during `CallWaiter` and hides after approval. *(small; 2 files + focused test)*
+2. **Bounded interaction contracts:** separate 7.5m pickup hover from 3.0m held actions/payment, add a narrow payment target collider, and derive pickup labels from complete world visual bounds. Verify E/LMB routing and equal Burger/Terminal/Plate spacing. *(medium; 4 files + focused test)*
+3. **Carry and terminal polish:** cap safe carry retraction at a modest 0.11m, preserve smoothing, and retune the terminal's normal carry orientation. Verify wall/NPC response and keypad-facing normal/close poses. *(small; 3 files + focused test)*
+4. **End-to-end regression:** run payment, keypad, food/plate, interaction, and main-scene checks; inspect captures; fix any failure before completion. *(small; tests/docs)*
+
+### Risks and Mitigations
+
+| Risk | Mitigation |
+| --- | --- |
+| Dedicated payment collider intercepts normal character movement | Use an `Area3D`, enable its ray layer only in `WAIT_FOR_PAYMENT`, and keep it out of body collision. |
+| 7.5m ray accidentally enables distant actions | Gate table and payment targets by independent 3.0m action distances. |
+| Retraction cap allows edge clipping at extreme wall contact | Keep padded query/smoothing but cap viewmodel movement; geometry occludes the last edge instead of moving the item into the camera. |
+
+
 ## Overview
 
 Standardize the real first-person interaction loop around object-name world labels, clean single-object silhouette highlighting, collision-aware held-item retraction, semantic `E`/LMB actions, and the newly imported payment-terminal GLB. Existing food/payment state logic and source GLBs remain intact.

@@ -7,7 +7,6 @@ signal picked_up(item: Node3D)
 @export var display_name := "Burger"
 @export var item_kind: StringName = &"burger_plate"
 @export var placeable := true
-@export var tooltip_height := 0.48
 
 @export_group("Carry Pose")
 @export var carry_position := Vector3(0.28, -0.30, -0.82)
@@ -107,13 +106,15 @@ func set_burger_visible(value: bool) -> void:
 		display_name = "Plate"
 		item_kind = &"empty_plate"
 		placeable = false
+		if _tooltip:
+			_tooltip.text = display_name
 
 
 func _build_tooltip() -> void:
 
-	_tooltip = InteractionTooltip.create_label(&"WorldTooltip", display_name, tooltip_height)
+	_tooltip = InteractionTooltip.create_label(&"WorldTooltip", display_name)
 	add_child(_tooltip)
-	_tooltip.follow_target(self, tooltip_height)
+	_tooltip.follow_visual_bounds(self)
 
 
 func _cache_colliders(node: Node) -> void:

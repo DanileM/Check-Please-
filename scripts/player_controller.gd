@@ -3,7 +3,11 @@ extends CharacterBody3D
 @export var move_speed := 4.2
 @export var mouse_sensitivity := 0.0022
 @export var acceleration := 14.0
-@export var interaction_distance := 3.0
+
+@export_group("Interaction Ranges")
+@export var world_pickup_distance := 7.5
+@export var held_item_action_distance := 3.0
+@export var payment_action_distance := 3.0
 
 @export_group("Held Item Collision")
 @export var held_item_collision_radius := 0.16
@@ -31,7 +35,7 @@ var _held_item_probe := SphereShape3D.new()
 func _ready() -> void:
     Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
     hint.text = "WASD — move    E — pick up    ESC — mouse"
-    ray.target_position.z = -interaction_distance
+    ray.target_position.z = -world_pickup_distance
     _held_item_probe.radius = held_item_collision_radius + held_item_wall_padding
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -152,15 +156,25 @@ func _update_interaction_target() -> void:
     if collider == null:
         _set_interaction_target(null)
         return
+    var hit_distance := camera.global_position.distance_to(ray.get_collision_point())
     var target_node: Node = collider
     while target_node != null:
-        if _is_payment_customer_target(target_node):
+        if _is_payment_customer_target(target_node) and hit_distance <= payment_action_distance:
             _set_interaction_target(target_node)
             return
-        if target_node.is_in_group("pickup_item") and target_node.can_interact():
+        if (
+            target_node.is_in_group("pickup_item")
+            and target_node.can_interact()
+            and hit_distance <= world_pickup_distance
+        ):
             _set_interaction_target(target_node)
             return
-        if target_node.is_in_group("table_station") and has_held_item() and target_node.can_place_item(held_item):
+        if (
+            target_node.is_in_group("table_station")
+            and has_held_item()
+            and target_node.can_place_item(held_item)
+            and hit_distance <= held_item_action_distance
+        ):
             _set_interaction_target(target_node)
             return
         target_node = target_node.get_parent()
