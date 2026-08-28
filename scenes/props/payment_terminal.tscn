@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://assets/props/terminal.glb" id="2_terminal_model"]
 
 [sub_resource type="BoxShape3D" id="TerminalCollision"]
-size = Vector3(0.11, 0.085, 0.22)
+size = Vector3(0.12, 0.1, 0.245)
 
 [sub_resource type="BoxShape3D" id="KeyCollision"]
 size = Vector3(0.022, 0.010, 0.018)
@@ -18,12 +18,14 @@ script = ExtResource("1_terminal")
 display_name = "Payment Terminal"
 item_kind = &"payment_terminal"
 placeable = false
-carry_position = Vector3(0.43, -0.34, -0.82)
+carry_position = Vector3(0.43, -0.22, -0.82)
 carry_rotation_degrees = Vector3(72, -12, -10)
-carry_scale = Vector3(2.7, 2.7, 2.7)
+carry_scale = Vector3(2.35, 2.35, 2.35)
 interaction_position = Vector3(-0.03, -0.12, -0.85)
 interaction_rotation_degrees = Vector3(77.16, 0, 0)
 interaction_scale = Vector3(2.8, 2.8, 2.8)
+held_collision_shape = SubResource("TerminalCollision")
+held_collision_offset = Vector3(0, 0.039, 0)
 
 [node name="Terminal" parent="." instance=ExtResource("2_terminal_model")]
 

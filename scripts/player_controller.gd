@@ -10,13 +10,9 @@ extends CharacterBody3D
 @export var payment_action_distance := 3.0
 
 @export_group("Held Item Collision")
-@export var held_item_collision_radius := 0.16
-@export_range(0.02, 0.25, 0.01) var held_item_max_retract_distance := 0.11
-@export var held_item_wall_padding := 0.05
-@export var held_item_retract_speed := 14.0
+@export_range(0.005, 0.08, 0.005) var held_item_wall_padding := 0.025
 @export var held_item_restore_speed := 8.0
 @export_flags_3d_physics var held_item_obstacle_mask := 1
-@export_range(4, 20, 1) var held_item_collision_samples := 12
 
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera3D
@@ -30,13 +26,12 @@ var interaction_target: Node
 var payment_customer: Node3D
 var payment_terminal: Node3D
 var payment_mode := false
-var _held_item_probe := SphereShape3D.new()
+var _held_item_query := PhysicsShapeQueryParameters3D.new()
 
 func _ready() -> void:
     Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
     hint.text = "WASD — move    E — pick up    ESC — mouse"
     ray.target_position.z = -world_pickup_distance
-    _held_item_probe.radius = held_item_collision_radius + held_item_wall_padding
 
 func _unhandled_input(event: InputEvent) -> void:
     if payment_mode:
@@ -225,9 +220,13 @@ func _update_held_item_retraction(delta: float) -> void:
         return
     var desired_position := _get_held_item_desired_position()
     var safe_position := _find_safe_carry_position(desired_position)
-    var retracting := safe_position.length_squared() + 0.0001 < held_item.position.length_squared()
-    var speed := held_item_retract_speed if retracting else held_item_restore_speed
-    var blend := 1.0 - exp(-speed * delta)
+    # Never interpolate through a known blocker. Ordinary carry-pose changes
+    # still ease, even when their target happens to be closer to the camera.
+    var collision_retracted := safe_position.distance_to(desired_position) > 0.0001
+    if collision_retracted:
+        held_item.position = safe_position
+        return
+    var blend := 1.0 - exp(-held_item_restore_speed * delta)
     held_item.position = held_item.position.lerp(safe_position, blend)
 
 
@@ -241,22 +240,31 @@ func _get_held_item_desired_position() -> Vector3:
 
 func _find_safe_carry_position(desired_position: Vector3) -> Vector3:
     var desired_distance := desired_position.length()
-    if desired_distance <= 0.001:
+    if desired_distance <= 0.001 or not (held_item is PickupItem):
+        return desired_position
+    var proxy_shape := (held_item as PickupItem).get_held_collision_shape()
+    if proxy_shape == null:
         return desired_position
     var direction := desired_position / desired_distance
-    var minimum_distance := maxf(desired_distance - held_item_max_retract_distance, 0.0)
-    var query := PhysicsShapeQueryParameters3D.new()
-    query.shape = _held_item_probe
-    query.collision_mask = held_item_obstacle_mask
-    query.collide_with_bodies = true
-    query.collide_with_areas = false
-    query.exclude = [get_rid()]
-    var sample_count := maxi(held_item_collision_samples, 2)
-    for sample_index in sample_count:
-        var fraction := float(sample_index) / float(sample_count - 1)
-        var distance := lerpf(desired_distance, minimum_distance, fraction)
-        var candidate := direction * distance
-        query.transform = Transform3D(Basis.IDENTITY, carry_anchor.to_global(candidate))
-        if get_world_3d().direct_space_state.intersect_shape(query, 1).is_empty():
-            return candidate
-    return direction * minimum_distance
+    var local_proxy_offset := (held_item as PickupItem).get_held_collision_offset()
+    var item_basis := carry_anchor.global_transform.basis * held_item.transform.basis
+    var proxy_basis := item_basis * (held_item as PickupItem).get_held_collision_rotation()
+    _held_item_query.shape = proxy_shape
+    _held_item_query.transform = Transform3D(
+        proxy_basis,
+        carry_anchor.global_position + item_basis * local_proxy_offset
+    )
+    _held_item_query.motion = carry_anchor.global_transform.basis * desired_position
+    _held_item_query.margin = held_item_wall_padding
+    _held_item_query.collision_mask = held_item_obstacle_mask
+    _held_item_query.collide_with_bodies = true
+    _held_item_query.collide_with_areas = false
+    _held_item_query.exclude = [get_rid()]
+    var cast_result := get_world_3d().direct_space_state.cast_motion(_held_item_query)
+    var safe_fraction := cast_result[0] if cast_result.size() >= 2 else 1.0
+    if safe_fraction >= 0.9999:
+        return desired_position
+    # cast_motion returns the first safe fraction for the entire oriented proxy.
+    # Collision safety wins over preserving the nominal carry distance.
+    var safe_distance := maxf(desired_distance * safe_fraction, 0.0)
+    return direction * safe_distance

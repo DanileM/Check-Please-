@@ -109,7 +109,7 @@ func _ready() -> void:
     mouth = model_root.find_child("Mouth", true, false) as Node3D
     _capture_face()
     _hide_props()
-    ComicStyle.apply(model_root, 0.010)
+    ComicStyle.apply(model_root, 0.010, 0.08)
     emotion_label.modulate.a = 0.0
     emotion_label.visible = false
     _set_standing_collision_enabled(true)
@@ -606,11 +606,11 @@ func _setup_hand_props() -> void:
     spoon_node = hand_props.spoon_node
     payment_card_node = hand_props.payment_card_node
     if menu_node:
-        ComicStyle.apply(menu_node, 0.008)
+        ComicStyle.apply(menu_node, 0.008, 0.08)
     if phone_node:
-        ComicStyle.apply(phone_node, 0.008)
+        ComicStyle.apply(phone_node, 0.008, 0.08)
     if spoon_node:
-        ComicStyle.apply(spoon_node, 0.008)
+        ComicStyle.apply(spoon_node, 0.008, 0.08)
 
 
 func _set_phone_review_visible(value: bool) -> void:

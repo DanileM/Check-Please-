@@ -7,6 +7,12 @@ uniform vec4 coral_chip : source_color = vec4(0.70, 0.32, 0.28, 1.0);
 uniform vec4 mint_chip : source_color = vec4(0.31, 0.50, 0.46, 1.0);
 uniform vec4 cream_chip : source_color = vec4(0.79, 0.69, 0.53, 1.0);
 
+varying vec2 floor_world_xz;
+
+void vertex() {
+	floor_world_xz = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xz;
+}
+
 float hash21(vec2 value) {
 	value = fract(value * vec2(123.34, 345.45));
 	value += dot(value, value + 34.345);
@@ -14,7 +20,8 @@ float hash21(vec2 value) {
 }
 
 void fragment() {
-	vec2 tiled_uv = UV * vec2(28.0, 37.0);
+	// World-space tiles keep independently editable room meshes continuous.
+	vec2 tiled_uv = (floor_world_xz + vec2(9.0, 12.0)) * vec2(28.0 / 18.0, 37.0 / 24.0);
 	vec2 tile_cell = floor(tiled_uv);
 	vec2 tile_local = fract(tiled_uv);
 	float closest_edge = min(min(tile_local.x, 1.0 - tile_local.x), min(tile_local.y, 1.0 - tile_local.y));

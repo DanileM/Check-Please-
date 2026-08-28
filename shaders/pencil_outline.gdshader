@@ -16,6 +16,9 @@ void vertex() {
 }
 
 void fragment() {
+    if (IN_SHADOW_PASS) {
+        discard;
+    }
     ALBEDO = outline_color.rgb;
     ALPHA = outline_color.a;
 }

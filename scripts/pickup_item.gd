@@ -13,6 +13,11 @@ signal picked_up(item: Node3D)
 @export var carry_rotation_degrees := Vector3(-7.0, -16.0, 4.0)
 @export var carry_scale := Vector3(1.0, 1.0, 1.0)
 
+@export_group("Held Collision Proxy")
+@export var held_collision_shape: Shape3D
+@export var held_collision_offset := Vector3.ZERO
+@export var held_collision_rotation_degrees := Vector3.ZERO
+
 var _held := false
 var _interactable := true
 var _world_scale := Vector3.ONE
@@ -42,6 +47,25 @@ func is_placeable() -> bool:
 func is_held() -> bool:
 
 	return _held
+
+
+func get_held_collision_shape() -> Shape3D:
+
+	return held_collision_shape
+
+
+func get_held_collision_offset() -> Vector3:
+
+	return held_collision_offset
+
+
+func get_held_collision_rotation() -> Basis:
+
+	return Basis.from_euler(Vector3(
+		deg_to_rad(held_collision_rotation_degrees.x),
+		deg_to_rad(held_collision_rotation_degrees.y),
+		deg_to_rad(held_collision_rotation_degrees.z)
+	))
 
 
 func can_interact() -> bool:

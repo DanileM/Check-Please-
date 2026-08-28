@@ -38,6 +38,7 @@ func show_order(icon_ids: PackedStringArray = PackedStringArray(["burger"])) -> 
 		hide_order()
 		return
 	_rebuild_icon_slots()
+	_set_viewport_active(true)
 	_target_visibility = 1.0
 	visible = true
 
@@ -93,6 +94,7 @@ func _process(delta: float) -> void:
 	_sprite.position = _base_sprite_position + float_offset + shake_offset
 	if _target_visibility <= 0.0 and _visibility_progress <= 0.001:
 		visible = false
+		_set_viewport_active(false)
 
 
 func _build_display() -> void:
@@ -101,7 +103,7 @@ func _build_display() -> void:
 	_viewport.name = "OrderBubbleViewport"
 	_viewport.size = viewport_size
 	_viewport.transparent_bg = true
-	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	add_child(_viewport)
 
 	_canvas = BubbleCanvas.new()
@@ -128,6 +130,7 @@ func _build_display() -> void:
 	_base_sprite_position = _sprite.position
 	_sprite.modulate.a = 0.0
 	_rebuild_icon_slots()
+	_set_viewport_active(false)
 
 
 func _rebuild_icon_slots() -> void:
@@ -149,6 +152,12 @@ func _rebuild_icon_slots() -> void:
 func _get_icon_texture(icon_id: String) -> Texture2D:
 
 	return PAYMENT_ICON if icon_id == "payment" else BURGER_ICON
+
+
+func _set_viewport_active(active: bool) -> void:
+	if _viewport:
+		_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS if active else SubViewport.UPDATE_DISABLED
+	set_process(active)
 
 
 class BubbleCanvas extends Control:

@@ -1,3 +1,89 @@
+# Current Task: Independent Room Surfaces and Storeroom Rename
+
+## Overview
+
+Rename the rear-left room to Storeroom and make Main Hall, Storeroom, and Kitchen separately editable visual-material targets. Structural collision remains shared and unchanged; each room receives its own non-overlapping visual floor and wall surfaces in the existing restaurant scene.
+
+## Discovery
+
+- `Architecture/Floor` is one full `18 x 24 m` visual mesh. `FloorBody` is the matching, independent physical collision and can remain whole after the visual split.
+- Existing rear-room wall collisions are already separate `StaticBody3D` nodes. They are not addressed by scripts, so they can move into a `StructuralCollision` grouping without changing behaviour.
+- `InteriorRooms/Toilet/Doorway` and `InteriorRooms/Kitchen/Doorway` are unused, invisible `Marker3D` nodes. There are no visible room-label/debug meshes to remove.
+- The `restaurant_floor.gdshader` derives its grid from mesh UVs. Splitting a mesh without a world-space grid would make tile density and grout seams differ by room.
+
+## Architecture Decisions
+
+- Replace only visual meshes with `Architecture/MainHall`, `Architecture/Storeroom`, and `Architecture/Kitchen` room roots. Each root owns a named floor MeshInstance and wall MeshInstances with its own local material resource.
+- Keep all collision under `Architecture/StructuralCollision`, with no alterations to shape extents, solid wall coverage, or open doorway spans.
+- Use a world-space floor grid in the existing floor shader so the three independent floor meshes meet as one continuous tile surface at equal height.
+- Rename every active scene node from `Toilet` to `Storeroom`; remove the unused room `Marker3D` nodes rather than replacing them.
+
+## Ordered Slices
+
+1. **Name and hierarchy cleanup:** rename active rear-left nodes to Storeroom, remove unused room markers, and create clean visual/collision grouping. Verify no active `Toilet` references remain. *(small; scene + focused test)*
+2. **Independent visual materials:** split floors and walls into room-owned meshes, each using an independent local floor/wall material target. Update the floor shader to retain a continuous grid. *(medium; scene + shader)*
+3. **Regression proof:** verify all three material targets are distinct, floor surfaces do not overlap/gap, player collision/doorways remain valid, and existing pickup/customer flows parse/run. *(small; focused tests)*
+
+## Risks and Mitigations
+
+| Risk | Mitigation |
+| --- | --- |
+| Split floor produces different tile size/seams | Use world X/Z coordinates in the existing floor shader rather than per-mesh UV coordinates. |
+| Visual refactor changes collision | Retain the same collision shapes and transforms under a dedicated structural node. |
+| Two room faces occupy the same wall plane | Offset the two face-only interior wall visuals to opposite sides of the structural wall. |
+
+## Result
+
+- `Architecture` now contains editor-facing `MainHall`, `Storeroom`, `Kitchen`, and `StructuralCollision` roots. The previous `InteriorRooms` grouping is gone.
+- The three named floor meshes have independent local ShaderMaterial resources. The world-space tile grid in `restaurant_floor.gdshader` keeps their initial terracotta tiles continuous across both shared room boundaries.
+- Each room's wall meshes use its own material resource: Main Hall preserves decorative left/right/rear variants, Storeroom shares one warm room wall material, and Kitchen shares one teal room wall material.
+- Removed the two unused invisible room Marker3D nodes. Customer/table markers are outside `Architecture` and remain untouched.
+
+# Current Task: Rear Service Rooms Architecture
+
+## Overview
+
+Replace the obsolete `InteriorArchitecture` scene with editor-visible rear service rooms in the existing 18 x 24 m restaurant shell. The new block begins at `z = -4.60`: a smaller Toilet occupies the rear-left, while a larger Kitchen occupies the rear-right. Explicit wall sections preserve separate open doorways and collision.
+
+## Discovery
+
+- The shell is explicit in `scenes/restaurant/restaurant.tscn`: floor `18 x 24`, side walls at `x = +/-9`, rear wall at `z = -12`, and ceiling at `y = 4.10`. The storefront/open entry remains at `+Z` in `storefront_exterior.tscn`.
+- `InteriorArchitecture` is a static packed scene referenced only once by `restaurant.tscn`; it has no script, autoload, helper code, or other usage. It can be removed without deleting shared materials.
+- `Restaurant/Architecture/BackWall/BackWall` is an obsolete, mesh-only duplicate inside the open room. It has no collision and will be removed with the replacement room layout.
+- There is no `NavigationRegion3D`, `NavigationMesh`, or `NavigationAgent3D` in this project. The current customer movement is direct between entry, the existing table at `z = 3`, and exit; it never enters the rear service block.
+- Burger and terminal pickups are at `z = 5.9`, and the table/customer path is at `z = 3`, all safely in the dining area ahead of the new rear divider.
+
+## Architecture Decisions
+
+- Keep the exterior shell, floor, ceiling, storefront, pickups, table, customer markers, and gameplay scripts intact.
+- Use explicit `MeshInstance3D` + matching `StaticBody3D/CollisionShape3D` wall sections under `Restaurant/Architecture/InteriorRooms`; do not replace the removed scene with another procedural generator.
+- Put the rear divider at `z = -4.60`, with a left Toilet width of about `5.4 m` and a right Kitchen width of about `12.2 m`. The divider between rooms is at `x = -3.5`.
+- Doorways are open, collision-free gaps: Toilet `0.95 m` centered at `x = -6.20`; Kitchen `1.10 m` centered at `x = 2.20`. Wall height remains `4.1 m`, thickness `0.22 m`.
+- Add only two low-cost room fill lights. Do not add fixtures, appliances, doors, or gameplay to either room.
+
+## Ordered Slices
+
+1. **Remove obsolete architecture safely:** remove the packed-scene reference/node, delete the unused `interior_architecture.tscn`, and make the restaurant’s optional legacy decor styling null-safe. Verify Godot parses without missing-resource failures. *(small; 3 files)*
+2. **Build explicit rear service block:** add material-matched rear-divider sections, a Toilet/Kitchen partition, matching collision, and basic room lights directly in the restaurant scene. Verify doorway gaps and wall bounds. *(medium; 1 file + focused harness)*
+3. **Regression and visual validation:** run scene parse, player collision/doorway assertions, pickup/table/customer-path checks, and capture views from the dining area and both rooms. *(small; test/docs)*
+
+## Risks and Mitigations
+
+| Risk | Mitigation |
+| --- | --- |
+| A full-width collider closes a doorway | Give every visible solid wall segment its own matching collision; omit collision in the two door spans. |
+| Rear rooms become unlit after division | Add one warm non-shadowed OmniLight3D inside each room. |
+| Furniture or existing flow is trapped | Keep the divider behind `z = -4.60`; all active objects use `z >= 3`. |
+| Old scene removal causes a missing node error | Search all references first and guard the now-optional legacy decor path in `restaurant.gd`. |
+
+## Result
+
+- Removed the only `InteriorArchitecture` scene reference/node and deleted `scenes/restaurant/interior_architecture.tscn`; no generator scripts or shared helpers existed.
+- Added explicit room geometry at `Architecture/InteriorRooms`: 0.22 m wall segments/colliders, lintels, visual doorway trim, a rear-left Toilet, rear-right Kitchen, and a full-height divider at `x = -3.5`.
+- Focused physics checks confirm both player-door paths are clear while the rear divider and room partition block the capsule. Existing food/payment and full customer food-delivery checks still pass.
+- No project navigation system exists to rebake. The direct customer route stays in the dining area, forward of the new divider.
+- The available headless runner uses Godot's dummy renderer and cannot capture a viewport; the capture harness now detects that condition instead of claiming an image was rendered.
+
 # Current Task: Interaction Presentation, Carry, and New Terminal Integration
 
 ## Current Task: Payment Interaction Regression Fix Pass
@@ -17,7 +103,7 @@ Repair the live payment/pickup presentation without replacing its architecture: 
 
 1. **Real card in animated hand:** remove temporary card geometry/material replacements and tune the existing `Arm_R_2` BoneAttachment transform. Verify the GLB-only prop moves during `CallWaiter` and hides after approval. *(small; 2 files + focused test)*
 2. **Bounded interaction contracts:** separate 7.5m pickup hover from 3.0m held actions/payment, add a narrow payment target collider, and derive pickup labels from complete world visual bounds. Verify E/LMB routing and equal Burger/Terminal/Plate spacing. *(medium; 4 files + focused test)*
-3. **Carry and terminal polish:** cap safe carry retraction at a modest 0.11m, preserve smoothing, and retune the terminal's normal carry orientation. Verify wall/NPC response and keypad-facing normal/close poses. *(small; 3 files + focused test)*
+3. **Carry and terminal polish:** use a full-volume, oriented proxy sweep that prioritizes collision safety over the former 0.11 m presentation cap; ease only the unobstructed return. Verify wall/NPC response and keypad-facing normal/close poses. *(small; 3 files + focused test)*
 4. **End-to-end regression:** run payment, keypad, food/plate, interaction, and main-scene checks; inspect captures; fix any failure before completion. *(small; tests/docs)*
 
 ### Risks and Mitigations
@@ -498,3 +584,35 @@ Rework the existing Godot 4.7 restaurant scene in place. The pass keeps the firs
 - The existing Korean restaurant identity is retained because the current project and earlier user direction already establish it; no new reference branding is copied.
 - Earlier screenshots in this task are treated as the available visual references. The written specification controls where it is more specific.
 - No git commits are possible because the workspace is not a git repository.
+
+# Implementation Plan: Visual-Preserving Performance Pass
+
+## Decisions
+
+- Keep VSync enabled in the project; benchmarking uses a runtime-only override.
+- Keep room material domains intact; do not batch static geometry without profiler evidence.
+- Replace held-item sampling with one item-configured shape cast, not render-mesh collision.
+
+## Ordered slices
+
+1. **Baseline:** record available runtime structural metrics and focused behaviour checks.
+2. **Collision:** align the two facade edge-post shapes; use per-item ShapeCast3D proxies for held Burger/Plate and Payment Terminal.
+3. **Idle rendering:** stop outline/status/order SubViewports when hidden; preserve active screen updates.
+4. **Outlines and lights:** disable outline-shadow participation; reduce only visually redundant customer outlines and shadow passes after comparison.
+5. **Verification:** run parse, focused collision/interaction checks, and repeat the same metrics. Defer batching/occlusion unless justified.
+
+## Risks
+
+| Risk | Mitigation |
+| --- | --- |
+| Cast proxy is too large or small | Keep independent, exported proxy data and regression-test wall/NPC contacts. |
+| Viewport freezes after re-enable | Toggle update mode with visibility lifecycle tests. |
+| Comic silhouette degrades | Limit initial filtering to tiny/internal meshes and preserve major body meshes. |
+
+## Follow-up: Full-volume held-prop wall safety
+
+- [x] Terminal proxy now exceeds the visual terminal body and uses the current item basis.
+- [x] Burger/Plate uses its existing shallow cylinder proxy.
+- [x] One `cast_motion` checks physical layer 1, excludes Player, and determines the final safe position.
+- [x] Inward correction is immediate; only outward restoration is smoothed.
+- [x] Front, corner, camera tilt, lateral movement, NPC, interactive-terminal, Burger, payment, parsing, and main-scene smoke checks pass.

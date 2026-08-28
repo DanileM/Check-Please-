@@ -178,7 +178,11 @@ func _tween_to_pose(next_position: Vector3, next_rotation_degrees: Vector3, next
 
     var tween := create_tween()
     tween.set_parallel(true)
-    tween.tween_property(self, "position", next_position, transition_duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+    # PlayerController owns held-item position so obstacle-safe placement cannot
+    # be overwritten between physics frames. Its restore smoothing supplies the
+    # same visual transition for position.
+    if not is_held():
+        position = next_position
     tween.tween_property(self, "rotation_degrees", next_rotation_degrees, transition_duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
     tween.tween_property(self, "scale", next_scale, transition_duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
@@ -204,7 +208,7 @@ func _build_screen() -> void:
     _screen_viewport.name = "TerminalScreenViewport"
     _screen_viewport.size = Vector2i(512, 256)
     _screen_viewport.transparent_bg = false
-    _screen_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+    _screen_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
     add_child(_screen_viewport)
 
     var screen_canvas := Control.new()
@@ -258,3 +262,5 @@ func _refresh_screen() -> void:
 
     if _screen_label:
         _screen_label.text = get_display_text()
+    if _screen_viewport:
+        _screen_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE

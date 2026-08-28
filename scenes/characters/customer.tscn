@@ -1,10 +1,10 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene format=3 uid="uid://d2w7kvqr1u1mq"]
 
-[ext_resource type="PackedScene" path="res://assets/characters/customer_1.glb" id="1_customer"]
-[ext_resource type="Script" path="res://scripts/customer_controller.gd" id="2_script"]
-[ext_resource type="Script" path="res://scripts/customer_status_icon.gd" id="3_status_icon"]
-[ext_resource type="Script" path="res://scripts/customer_hand_props.gd" id="4_hand_props"]
-[ext_resource type="Script" path="res://scripts/order_bubble_3d.gd" id="5_order_bubble"]
+[ext_resource type="PackedScene" uid="uid://tl3f4caq2yx1" path="res://assets/characters/customer_1.glb" id="1_customer"]
+[ext_resource type="Script" uid="uid://2ptetyk80kpo" path="res://scripts/customer_controller.gd" id="2_script"]
+[ext_resource type="Script" uid="uid://kqn78rmj0tvw" path="res://scripts/customer_status_icon.gd" id="3_status_icon"]
+[ext_resource type="Script" uid="uid://r5ha2q2caitd" path="res://scripts/customer_hand_props.gd" id="4_hand_props"]
+[ext_resource type="Script" uid="uid://dsei57iw7faey" path="res://scripts/order_bubble_3d.gd" id="5_order_bubble"]
 
 [sub_resource type="CapsuleShape3D" id="Capsule_customer"]
 radius = 0.36
@@ -13,47 +13,48 @@ height = 1.55
 [sub_resource type="SphereShape3D" id="PaymentInteractionShape"]
 radius = 0.46
 
-[node name="Customer" type="CharacterBody3D"]
+[node name="Customer" type="CharacterBody3D" unique_id=843803362]
 script = ExtResource("2_script")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-position = Vector3(0, 0.78, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=383544181]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78, 0)
 shape = SubResource("Capsule_customer")
 
-[node name="PaymentInteractionArea" type="Area3D" parent="."]
+[node name="PaymentInteractionArea" type="Area3D" parent="." unique_id=2087693447]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.26010776)
 collision_layer = 0
 collision_mask = 0
 monitoring = false
 monitorable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PaymentInteractionArea"]
-position = Vector3(0, 1.04, 0.58)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PaymentInteractionArea" unique_id=302979268]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.04, 0.2601691)
 shape = SubResource("PaymentInteractionShape")
 
-[node name="Visual" type="Node3D" parent="."]
+[node name="Visual" type="Node3D" parent="." unique_id=842385745]
 
-[node name="CustomerModel" parent="Visual" instance=ExtResource("1_customer")]
+[node name="CustomerModel" parent="Visual" unique_id=1359735968 instance=ExtResource("1_customer")]
 
-[node name="EmotionAnchor" type="Node3D" parent="."]
-position = Vector3(0, 2.05, 0)
+[node name="EmotionAnchor" type="Node3D" parent="." unique_id=1517305267]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5164459, 0)
 
-[node name="EmotionLabel" type="Label3D" parent="EmotionAnchor"]
+[node name="EmotionLabel" type="Label3D" parent="EmotionAnchor" unique_id=1693240252]
+billboard = 1
+no_depth_test = true
+modulate = Color(1, 0.86, 0.35, 0)
 text = "!"
 font_size = 64
 outline_size = 10
-modulate = Color(1, 0.86, 0.35, 0)
-billboard = 1
-no_depth_test = true
 
-[node name="StatusIconAnchor" type="Node3D" parent="."]
-position = Vector3(0, 2.42, 0)
+[node name="StatusIconAnchor" type="Node3D" parent="." unique_id=1751250319]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.42, 0)
 
-[node name="CustomerStatusIcon" type="Node3D" parent="StatusIconAnchor"]
+[node name="CustomerStatusIcon" type="Node3D" parent="StatusIconAnchor" unique_id=961218123]
 script = ExtResource("3_status_icon")
 
-[node name="OrderBubble" type="Node3D" parent="StatusIconAnchor"]
-position = Vector3(0, 0.03, 0)
+[node name="OrderBubble" type="Node3D" parent="StatusIconAnchor" unique_id=1447786536]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
 script = ExtResource("5_order_bubble")
 
-[node name="HandProps" type="Node3D" parent="."]
+[node name="HandProps" type="Node3D" parent="." unique_id=264749863]
 script = ExtResource("4_hand_props")

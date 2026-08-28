@@ -8,7 +8,7 @@ const MENU_POSE_PUT_AWAY: StringName = &"put_away"
 
 @export_group("Payment Card Presentation")
 @export var payment_card_bone: StringName = &"Arm_R_2"
-@export var payment_card_position := Vector3(-0.18, -0.42, 0.55)
+@export var payment_card_position := Vector3(-0.14, 0.41, 0.10)
 @export var payment_card_rotation_degrees := Vector3(0.0, -83.0, 0.0)
 @export var payment_card_scale := Vector3(2.8, 2.8, 2.8)
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3]
+[gd_scene load_steps=45 format=3]
 
 [ext_resource type="Material" path="res://materials/restaurant/facade_coral.tres" id="1_facade_coral"]
 [ext_resource type="Material" path="res://materials/restaurant/facade_teal.tres" id="2_facade_teal"]
@@ -105,6 +105,9 @@ size = Vector3(18, 0.65, 0.24)
 
 [sub_resource type="BoxShape3D" id="PierShape"]
 size = Vector3(0.40, 3.45, 0.24)
+
+[sub_resource type="BoxShape3D" id="OuterPierShape"]
+size = Vector3(0.60, 3.45, 0.24)
 
 [sub_resource type="BoxShape3D" id="SillShape"]
 size = Vector3(6.80, 0.50, 0.24)
@@ -430,11 +433,11 @@ shape = SubResource("HeaderShape")
 
 [node name="OuterPierLeft" type="CollisionShape3D" parent="Facade/FacadeCollision"]
 position = Vector3(-8.70, 1.725, 12)
-shape = SubResource("PierShape")
+shape = SubResource("OuterPierShape")
 
 [node name="OuterPierRight" type="CollisionShape3D" parent="Facade/FacadeCollision"]
 position = Vector3(8.70, 1.725, 12)
-shape = SubResource("PierShape")
+shape = SubResource("OuterPierShape")
 
 [node name="DoorJambLeft" type="CollisionShape3D" parent="Facade/FacadeCollision"]
 position = Vector3(-1.40, 1.725, 12)

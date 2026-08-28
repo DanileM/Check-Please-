@@ -284,6 +284,86 @@
 
 **Files likely touched:** `README.md`, `tasks/plan.md`, `tasks/todo.md`.
 
+# Independent Room Surfaces and Storeroom Rename Task List
+
+## Task 42: Rename and clear room markers
+
+**Acceptance criteria:**
+
+- [x] No active building node uses the name `Toilet`.
+- [x] Storeroom is the rear-left room; Kitchen remains rear-right.
+- [x] Unused room Marker3D nodes are removed while gameplay markers remain untouched.
+
+**Verification:** focused scene-tree audit finds `Storeroom`, no active `Toilet`, and no room labels/debug meshes.
+
+**Dependencies:** None.
+
+## Task 43: Create independent room surfaces
+
+**Acceptance criteria:**
+
+- [x] `MainHall_Floor`, `Storeroom_Floor`, and `Kitchen_Floor` are separate material targets.
+- [x] Each room owns separate visual wall surfaces and a local wall material target.
+- [x] Floors meet at one height without coplanar overlap, holes, or tile-grid seams.
+
+**Verification:** focused material/geometry harness and Godot parse.
+
+**Dependencies:** Task 42.
+
+## Task 44: Regress structural collision and gameplay clearance
+
+**Acceptance criteria:**
+
+- [x] Existing room walls and doorway opening behaviour remain unchanged.
+- [x] Pickups, table, and customer route remain in the Main Hall.
+- [x] Main scene starts without missing paths or new parser errors.
+
+**Verification:** player collision, food/payment, and editor-parse checks.
+
+**Dependencies:** Task 43.
+
+# Rear Service Rooms Architecture Task List
+
+## Task 39: Remove obsolete InteriorArchitecture
+
+**Acceptance criteria:**
+
+- [x] `InteriorArchitecture` is no longer referenced or instanced by the restaurant scene.
+- [x] The old packed scene is removed only after confirming no other usage.
+- [x] Restaurant startup has no missing-node/resource error caused by this cleanup.
+
+**Verification:** Godot editor parse and a focused restaurant startup harness.
+
+**Dependencies:** None.
+
+**Files likely touched:** `scenes/restaurant/restaurant.tscn`, `scenes/restaurant/interior_architecture.tscn`, `scripts/restaurant.gd`.
+
+## Task 40: Create explicit Toilet and Kitchen room block
+
+**Acceptance criteria:**
+
+- [x] A 4.1 m-high, 0.22 m-thick rear divider has separate Toilet and Kitchen doorways.
+- [x] Toilet is smaller and rear-left; Kitchen is larger and rear-right.
+- [x] Each solid wall segment has matching collision; no doorway has collision.
+
+**Verification:** focused geometry/collision harness and visual capture.
+
+**Dependencies:** Task 39.
+
+**Files likely touched:** `scenes/restaurant/restaurant.tscn`.
+
+## Task 41: Validate gameplay clearance and views
+
+**Acceptance criteria:**
+
+- [x] Existing pickups/table/customer route remain in the open dining area.
+- [x] Player can enter both rooms but cannot cross their solid walls.
+- [x] Ceiling and exterior shell remain unchanged.
+
+**Verification:** Godot run and collision assertions pass. The current headless runner uses the dummy renderer, so it cannot produce a viewport image; the capture harness now fails explicitly under that renderer rather than reporting a false pass.
+
+**Dependencies:** Task 40.
+
 # Customer Presentation Refinement Task List
 
 ## Task 18: Stabilize Hand Props and Reading Gaze
@@ -571,7 +651,7 @@
 - [ ] Only `credit_card.glb` is visible from `Arm_R_2` during `WAIT_FOR_PAYMENT`.
 - [ ] Pickup hover is 7.5m; table/payment held actions stay 3.0m.
 - [ ] Pickup labels use complete visual bounds plus one small shared margin.
-- [ ] Held-item retraction never exceeds 0.11m and terminal face remains camera-facing.
+- [x] Held-item correction is derived from the first full-volume sweep hit; collision safety may exceed the former 0.11 m cap and terminal remains camera-facing.
 
 **Verification:**
 - [ ] Focused Godot card, targeting, tooltip/range, carry, terminal, and payment-flow scripts pass.
@@ -589,3 +669,31 @@
 - `scenes/props/payment_terminal.tscn`
 
 **Estimated scope:** Medium: 5-7 files
+
+## Task 39: Visual-preserving performance pass
+
+**Acceptance criteria:**
+- [x] Replace held-item multi-sample physics checks with an item-specific proxy sweep; verify Burger/Plate and Terminal against wall/NPC.
+- [x] Align facade outer-pier collision thickness with its 0.60 m visual mesh.
+- [x] Disable nonvisual comic-outline shadow participation and idle SubViewport rendering.
+- [x] Preserve room material separation and existing interaction/payment flow; verify focused Godot tests.
+- [ ] Capture desktop GPU/visual before-after profiling with VSync disabled temporarily; headless runs cannot produce this metric.
+
+**Verification:**
+- [x] Baseline and final structural metrics use the same runtime scenes; VSync remains enabled in project settings.
+- [x] Godot parses and focused collision, interaction, and payment checks pass.
+
+**Dependencies:** Task 38
+
+**Estimated scope:** Medium: 5 files
+
+## Task 40: Full-volume held-prop wall safety
+
+**Acceptance criteria:**
+- [x] Terminal uses an oversized oriented BoxShape3D; Burger/Plate uses its shallow cylinder proxy.
+- [x] Immediate collision-safe retraction cannot be overwritten by terminal pose tweening.
+- [x] Only the unobstructed return to the carry pose is smoothed.
+
+**Verification:**
+- [x] Focused front/corner/tilt/strafe/NPC/interactive terminal and Burger tests pass.
+- [x] Terminal-facing, payment-flow, room-collision, parse, and headless main checks pass.

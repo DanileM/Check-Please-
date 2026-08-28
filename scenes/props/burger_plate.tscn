@@ -16,6 +16,8 @@ item_kind = &"burger_plate"
 placeable = true
 carry_position = Vector3(0.28, -0.3, -0.82)
 carry_rotation_degrees = Vector3(-7, -16, 4)
+held_collision_shape = SubResource("FoodCollision")
+held_collision_offset = Vector3(0, 0.12, 0)
 
 [node name="Plate" parent="." instance=ExtResource("2_plate")]
 

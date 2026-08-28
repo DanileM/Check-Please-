@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://w2mr1y7nidc"
-path="res://.godot/imported/bar_shelf.glb-8afd37b4eff037a37fbd97b9d5d115b5.scn"
+uid="uid://cr27thoeiqvpm"
+path="res://.godot/imported/griddle.glb-b52a5b35e4a10defe7cdf4195f615053.scn"
 
 [deps]
 
-source_file="res://assets/furniture/bar_shelf.glb"
-dest_files=["res://.godot/imported/bar_shelf.glb-8afd37b4eff037a37fbd97b9d5d115b5.scn"]
+source_file="res://assets/environment/kitchen/griddle.glb"
+dest_files=["res://.godot/imported/griddle.glb-b52a5b35e4a10defe7cdf4195f615053.scn"]
 
 [params]
 

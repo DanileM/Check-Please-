@@ -27,6 +27,7 @@ func _ready() -> void:
 		return
 	_source_camera.cull_mask &= ~MASK_LAYER
 	_build_mask_viewport()
+	_set_mask_viewport_active(false)
 
 
 func _exit_tree() -> void:
@@ -45,6 +46,7 @@ func set_highlighted_root(root: Node3D, enabled: bool) -> void:
 	if root != _highlighted_root:
 		_highlighted_root = root
 		_rebuild_mask_meshes()
+	_set_mask_viewport_active(not _mask_pairs.is_empty())
 	if _overlay:
 		_overlay.visible = not _mask_pairs.is_empty()
 
@@ -64,7 +66,7 @@ func _build_mask_viewport() -> void:
 	_mask_viewport = SubViewport.new()
 	_mask_viewport.name = "InteractionOutlineMaskViewport"
 	_mask_viewport.transparent_bg = true
-	_mask_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	_mask_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	_mask_viewport.world_3d = get_viewport().world_3d
 	add_child(_mask_viewport)
 
@@ -145,8 +147,15 @@ func _sync_mask_meshes() -> void:
 func _clear_highlight() -> void:
 	_highlighted_root = null
 	_rebuild_mask_meshes()
+	_set_mask_viewport_active(false)
 	if _overlay:
 		_overlay.visible = false
+
+
+func _set_mask_viewport_active(active: bool) -> void:
+	if _mask_viewport:
+		_mask_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS if active else SubViewport.UPDATE_DISABLED
+	set_process(active)
 
 
 func _get_mask_material() -> StandardMaterial3D:

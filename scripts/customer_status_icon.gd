@@ -30,6 +30,7 @@ func show_icon(symbol: String) -> void:
 	_symbol = symbol
 	_bob_time = 0.0
 	_apply_symbol()
+	_set_viewport_active(true)
 	visible = true
 
 
@@ -40,6 +41,7 @@ func hide_icon() -> void:
 	if _sprite:
 		_sprite.position = _base_sprite_position
 	visible = false
+	_set_viewport_active(false)
 
 
 func set_fill_progress(progress: float) -> void:
@@ -90,7 +92,7 @@ func _build_display() -> void:
 	_viewport.name = "StatusViewport"
 	_viewport.size = viewport_size
 	_viewport.transparent_bg = true
-	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	add_child(_viewport)
 
 	var canvas := Control.new()
@@ -120,6 +122,12 @@ func _build_display() -> void:
 
 	_apply_symbol()
 	_apply_fill()
+
+
+func _set_viewport_active(active: bool) -> void:
+	if _viewport:
+		_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS if active else SubViewport.UPDATE_DISABLED
+	set_process(active)
 
 
 func _make_label(color: Color) -> Label:
