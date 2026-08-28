@@ -11,10 +11,10 @@ extends CharacterBody3D
 
 @export_group("Held Item Collision")
 @export var held_item_collision_radius := 0.16
-@export var held_item_min_distance := 0.30
+@export_range(0.02, 0.25, 0.01) var held_item_max_retract_distance := 0.11
 @export var held_item_wall_padding := 0.05
-@export var held_item_retract_speed := 18.0
-@export var held_item_restore_speed := 10.0
+@export var held_item_retract_speed := 14.0
+@export var held_item_restore_speed := 8.0
 @export_flags_3d_physics var held_item_obstacle_mask := 1
 @export_range(4, 20, 1) var held_item_collision_samples := 12
 
@@ -244,7 +244,7 @@ func _find_safe_carry_position(desired_position: Vector3) -> Vector3:
     if desired_distance <= 0.001:
         return desired_position
     var direction := desired_position / desired_distance
-    var minimum_distance := minf(held_item_min_distance, desired_distance)
+    var minimum_distance := maxf(desired_distance - held_item_max_retract_distance, 0.0)
     var query := PhysicsShapeQueryParameters3D.new()
     query.shape = _held_item_probe
     query.collision_mask = held_item_obstacle_mask
