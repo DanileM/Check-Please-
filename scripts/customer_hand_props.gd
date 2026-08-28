@@ -79,8 +79,6 @@ func setup(skeleton: Skeleton3D) -> void:
         payment_card_node = PAYMENT_CARD_SCENE.instantiate() as Node3D
         payment_card_node.add_to_group("comic_outline_exempt")
         payment_card_attachment.add_child(payment_card_node)
-        _style_payment_card()
-        _add_payment_card_readability_face()
         _apply_payment_card_pose()
         payment_card_node.visible = false
 
@@ -157,53 +155,6 @@ func _apply_payment_card_pose() -> void:
     payment_card_node.position = payment_card_position
     payment_card_node.rotation_degrees = payment_card_rotation_degrees
     payment_card_node.scale = payment_card_scale
-
-
-func _style_payment_card() -> void:
-    # The imported card has very dark PBR defaults. Keep the source GLB intact,
-    # but give the held prop a readable flat game-material treatment.
-    _set_card_mesh_color(&"Card_Body", Color("#2f9290"))
-    _set_card_mesh_color(&"Card_Accent", Color("#f05b75"))
-    _set_card_mesh_color(&"Card_BackStripe", Color("#fff0c8"))
-    _set_card_mesh_color(&"Card_Chip", Color("#f4ce61"))
-
-
-func _add_payment_card_readability_face() -> void:
-    var face := MeshInstance3D.new()
-    face.name = "PaymentCardReadableFace"
-    var face_mesh := QuadMesh.new()
-    face_mesh.size = Vector2(0.084, 0.052)
-    face.mesh = face_mesh
-    face.position.z = 0.002
-    var face_material := StandardMaterial3D.new()
-    face_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-    face_material.albedo_color = Color("#2f9290")
-    face_material.cull_mode = BaseMaterial3D.CULL_DISABLED
-    face.material_override = face_material
-    payment_card_node.add_child(face)
-
-    var chip := MeshInstance3D.new()
-    chip.name = "PaymentCardReadableChip"
-    var chip_mesh := BoxMesh.new()
-    chip_mesh.size = Vector3(0.019, 0.014, 0.002)
-    chip.mesh = chip_mesh
-    chip.position = Vector3(-0.014, 0.006, 0.004)
-    var chip_material := StandardMaterial3D.new()
-    chip_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-    chip_material.albedo_color = Color("#f4ce61")
-    chip.material_override = chip_material
-    payment_card_node.add_child(chip)
-
-
-func _set_card_mesh_color(mesh_name: StringName, color: Color) -> void:
-    var mesh := payment_card_node.find_child(mesh_name, true, false) as MeshInstance3D
-    if mesh == null:
-        return
-    var material := StandardMaterial3D.new()
-    material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-    material.albedo_color = color
-    material.cull_mode = BaseMaterial3D.CULL_DISABLED
-    mesh.material_override = material
 
 
 func _create_attachment(skeleton: Skeleton3D, bone_name: StringName, attachment_name: StringName) -> BoneAttachment3D:
