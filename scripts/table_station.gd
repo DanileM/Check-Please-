@@ -20,10 +20,6 @@ signal empty_plate_collected
 var food_delivery_allowed := false
 var placed_item: Node3D
 var _tooltip: InteractionTooltip
-var _outline_material: ShaderMaterial
-var _mesh_overlays := {}
-
-const OUTLINE_SHADER := preload("res://shaders/pencil_outline.gdshader")
 
 func _ready() -> void:
     add_to_group("table_station")
@@ -55,11 +51,9 @@ func set_place_highlighted(enabled: bool) -> void:
     var should_show := enabled and food_delivery_allowed and placed_item == null
     if _tooltip:
         _tooltip.visible = should_show
-    for mesh in _find_meshes(table_visual):
-        var key := mesh.get_instance_id()
-        if not _mesh_overlays.has(key):
-            _mesh_overlays[key] = mesh.material_overlay
-        mesh.material_overlay = _get_outline_material() if should_show else _mesh_overlays[key]
+    var outline_controller := get_tree().get_first_node_in_group("interaction_outline_controller")
+    if outline_controller and outline_controller.has_method("set_highlighted_root"):
+        outline_controller.call("set_highlighted_root", table_visual, should_show)
 
 
 func place_item(item: Node3D) -> bool:
@@ -92,22 +86,3 @@ func _build_tooltip() -> void:
     _tooltip = InteractionTooltip.create_label(&"PlaceTooltip", "Table", place_tooltip_height)
     add_child(_tooltip)
 
-
-func _get_outline_material() -> ShaderMaterial:
-    if _outline_material == null:
-        _outline_material = ShaderMaterial.new()
-        _outline_material.shader = OUTLINE_SHADER
-        _outline_material.set_shader_parameter("outline_width", highlight_outline_width)
-        _outline_material.set_shader_parameter("outline_color", Color("#f8d351"))
-    return _outline_material
-
-
-func _find_meshes(node: Node) -> Array[MeshInstance3D]:
-    var meshes: Array[MeshInstance3D] = []
-    if node == null:
-        return meshes
-    for child in node.get_children():
-        if child is MeshInstance3D:
-            meshes.append(child)
-        meshes.append_array(_find_meshes(child))
-    return meshes

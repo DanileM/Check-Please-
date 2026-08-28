@@ -18,11 +18,7 @@ var _held := false
 var _interactable := true
 var _world_scale := Vector3.ONE
 var _tooltip: InteractionTooltip
-var _outline_material: ShaderMaterial
-var _mesh_overlays := {}
 var _collider_layers: Array[Dictionary] = []
-
-const OUTLINE_SHADER := preload("res://shaders/pencil_outline.gdshader")
 
 
 func _ready() -> void:
@@ -65,15 +61,14 @@ func set_interactable(enabled: bool) -> void:
 
 func set_highlighted(enabled: bool) -> void:
 
-	# Held terminal items can reuse the same outline as a contextual payment cue.
-	var should_show := enabled and (can_interact() or _held)
+	# A held terminal may reuse the silhouette as a contextual payment cue, but
+	# world labels remain reserved for physical pickup objects.
+	var should_outline := enabled and (can_interact() or _held)
 	if _tooltip:
-		_tooltip.visible = should_show
-	for mesh in _find_meshes(self):
-		var key := mesh.get_instance_id()
-		if not _mesh_overlays.has(key):
-			_mesh_overlays[key] = mesh.material_overlay
-		mesh.material_overlay = _get_outline_material() if should_show else _mesh_overlays[key]
+		_tooltip.visible = enabled and can_interact()
+	var outline_controller := get_tree().get_first_node_in_group("interaction_outline_controller")
+	if outline_controller and outline_controller.has_method("set_highlighted_root"):
+		outline_controller.call("set_highlighted_root", self, should_outline)
 
 
 func pick_up_to(carry_anchor: Node3D) -> bool:
@@ -118,26 +113,6 @@ func _build_tooltip() -> void:
 
 	_tooltip = InteractionTooltip.create_label(&"WorldTooltip", display_name, tooltip_height)
 	add_child(_tooltip)
-
-
-func _get_outline_material() -> ShaderMaterial:
-
-	if _outline_material == null:
-		_outline_material = ShaderMaterial.new()
-		_outline_material.shader = OUTLINE_SHADER
-		_outline_material.set_shader_parameter("outline_width", 0.018)
-		_outline_material.set_shader_parameter("outline_color", Color("#f8d351"))
-	return _outline_material
-
-
-func _find_meshes(node: Node) -> Array[MeshInstance3D]:
-
-	var meshes: Array[MeshInstance3D] = []
-	for child in node.get_children():
-		if child is MeshInstance3D:
-			meshes.append(child)
-		meshes.append_array(_find_meshes(child))
-	return meshes
 
 
 func _cache_colliders(node: Node) -> void:

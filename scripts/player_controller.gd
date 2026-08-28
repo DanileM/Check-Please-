@@ -25,7 +25,7 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
     if payment_mode:
-        if event.is_action_pressed(&"use_held_item"):
+        if event is InputEventMouseButton and event.is_action_pressed(&"use_held_item"):
             if payment_terminal:
                 payment_terminal.call("click_from_camera", camera, event.position)
         elif event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
@@ -37,7 +37,7 @@ func _unhandled_input(event: InputEvent) -> void:
         head.rotation.x = clamp(head.rotation.x, deg_to_rad(-82.0), deg_to_rad(82.0))
     elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
         Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED else Input.MOUSE_MODE_CAPTURED
-    elif event.is_action_pressed(&"use_held_item"):
+    elif event is InputEventMouseButton and event.is_action_pressed(&"use_held_item"):
         if _use_held_item():
             get_viewport().set_input_as_handled()
         elif Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:

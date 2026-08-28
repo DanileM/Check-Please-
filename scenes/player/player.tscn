@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/player_controller.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/interaction_outline_controller.gd" id="2_outline"]
 
 [sub_resource type="CapsuleShape3D" id="Capsule_player"]
 radius = 0.34
@@ -29,6 +30,10 @@ collide_with_areas = true
 collide_with_bodies = true
 
 [node name="CarryAnchor" type="Node3D" parent="Head/Camera3D"]
+
+[node name="InteractionOutlineController" type="Node" parent="."]
+script = ExtResource("2_outline")
+source_camera_path = NodePath("../Head/Camera3D")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
