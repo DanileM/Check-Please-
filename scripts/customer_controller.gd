@@ -600,8 +600,6 @@ func _setup_hand_props() -> void:
         ComicStyle.apply(phone_node, 0.008)
     if spoon_node:
         ComicStyle.apply(spoon_node, 0.008)
-    if payment_card_node:
-        ComicStyle.apply(payment_card_node, 0.008)
 
 
 func _set_phone_review_visible(value: bool) -> void:

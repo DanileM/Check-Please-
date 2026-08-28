@@ -7,6 +7,8 @@ static func apply(root: Node, width: float = 0.014) -> void:
     _apply_recursive(root, width)
 
 static func _apply_recursive(node: Node, width: float) -> void:
+    if node.is_in_group("comic_outline_exempt"):
+        return
     if node is MeshInstance3D:
         var outline := ShaderMaterial.new()
         outline.shader = OUTLINE_SHADER

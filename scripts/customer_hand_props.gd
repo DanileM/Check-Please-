@@ -77,6 +77,7 @@ func setup(skeleton: Skeleton3D) -> void:
     payment_card_attachment = _create_attachment(skeleton, payment_card_bone, &"PaymentCardAttachment")
     if payment_card_attachment:
         payment_card_node = PAYMENT_CARD_SCENE.instantiate() as Node3D
+        payment_card_node.add_to_group("comic_outline_exempt")
         payment_card_attachment.add_child(payment_card_node)
         _style_payment_card()
         _add_payment_card_readability_face()

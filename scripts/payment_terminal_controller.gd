@@ -196,7 +196,7 @@ func _set_terminal_buttons_enabled(enabled: bool) -> void:
 
 func _build_screen() -> void:
 
-    var screen_mesh := find_child("POS_ScreenInner", true, false) as MeshInstance3D
+    var screen_mesh := find_child("POS_Screen", true, false) as MeshInstance3D
     if screen_mesh == null:
         push_warning("Payment terminal screen mesh was not found")
         return
@@ -237,10 +237,14 @@ func _add_screen_surface(reference_screen_mesh: MeshInstance3D) -> void:
     var display_surface := MeshInstance3D.new()
     display_surface.name = "LiveScreenSurface"
     var display_mesh := QuadMesh.new()
-    display_mesh.size = Vector2(0.068, 0.039)
+    display_mesh.size = Vector2(0.066, 0.050)
     display_surface.mesh = display_mesh
-    display_surface.transform = global_transform.affine_inverse() * reference_screen_mesh.global_transform
-    display_surface.position += display_surface.transform.basis.z * 0.001
+    var screen_transform := global_transform.affine_inverse() * reference_screen_mesh.global_transform
+    # POS_Screen is an XZ panel with a +Y outward normal. QuadMesh faces +Z.
+    # Rotate it into that authored plane, then lift it toward the player enough
+    # to avoid z-fighting without touching the imported GLB.
+    screen_transform *= Transform3D(Basis(Vector3.RIGHT, -PI * 0.5), Vector3(0.0, 0.0015, 0.0))
+    display_surface.transform = screen_transform
     var screen_material := StandardMaterial3D.new()
     screen_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
     screen_material.albedo_texture = _screen_viewport.get_texture()
