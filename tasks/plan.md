@@ -1,3 +1,50 @@
+# Current Task: Interaction Presentation, Carry, and New Terminal Integration
+
+## Overview
+
+Standardize the real first-person interaction loop around object-name world labels, clean single-object silhouette highlighting, collision-aware held-item retraction, semantic `E`/LMB actions, and the newly imported payment-terminal GLB. Existing food/payment state logic and source GLBs remain intact.
+
+## Discovery
+
+- `scripts/player_controller.gd` is the interaction owner. It currently binds raw `KEY_E` to a mixed pickup/place/payment `_interact()` method; LMB is reserved only for payment keypad clicks.
+- `PickupItem` and `TableStation` each instantiate their own 48px/9px-outline `Label3D`, while the customer context is a HUD label. `PaymentTerminalController.get_tooltip_text()` incorrectly returns `Take Payment` for a physical pickup.
+- Interaction highlighting applies `pencil_outline.gdshader` as an inverted-hull `material_overlay` to *every* child mesh. This produces the unwanted internal terminal lines and must remain separate from `ComicStyle`'s black art outline.
+- The new source model is `assets/props/terminal.glb`, root `TerminalRoot`, with `POS_Body`, `POS_Key_0…9`, `POS_Key_Cancel`, `POS_Key_Clear`, `POS_Key_Charge`, `POS_Screen`, `POS_ScreenFrame`, and `POS_TopPanel`. Its screen replaced the old `POS_ScreenInner`, and its button coordinates differ from the wrapper's old hitboxes.
+- Held items are reparented directly to `Player/Head/Camera3D/CarryAnchor`; their colliders are disabled but there is no obstacle query or safe-distance retraction. Default environment, furniture, and NPC bodies share the gameplay collision layer, while the player capsule must be excluded.
+- `CustomerController` applies `ComicStyle` to its full imported model after creating the dynamic card attachment, then applies it again directly to the card; both paths explain the unwanted black card outline.
+
+## Architecture Decisions
+
+- Add one reusable `InteractionTooltip` factory/configuration so pickup and placement world labels share typography, scale, billboarding, and object-first wording.
+- Replace per-mesh interaction hulls with a player-owned mask camera and full-screen edge pass. It renders temporary white clone meshes on a camera-excluded layer, so all child meshes contribute to one union mask without altering global comic outlines.
+- Keep `PickupItem` as the carry-data owner and let `PlayerController` own one reusable sphere-query retraction path for every held item. It ignores the player/held item and only moves the display transform smoothly toward the camera.
+- Adapt the existing terminal wrapper/controller to `POS_*` nodes and preserve cents/payment behavior. Use wrapper `Area3D` hitboxes only; do not edit the GLB.
+- Add semantic InputMap actions in `project.godot`: `interact_pickup` (`E`) and `use_held_item` (left mouse). Pickup remains exclusive to `E`; LMB uses only an already held item.
+
+## Ordered Slices
+
+1. **Tooltip and action contract:** centralize world-label presentation, rename physical-object labels, and split player input into semantic pickup vs held-item use. Verify Burger/Plate/Payment Terminal labels and E/LMB routing. *(medium; 5 files)*
+2. **Unified selection outline:** add a player-owned mask/edge outline controller; migrate pickup/table highlighting from per-mesh hull overlays. Verify multi-mesh terminal produces no internal yellow lines. *(medium; 5 files)*
+3. **New terminal and card presentation:** map the new `POS_*` model to screen overlay, hitboxes, collision bounds, carry/interactive poses; exempt card meshes from comic outline. Verify cents entry and correct payment. *(medium; 4 files)*
+4. **Collision-aware carry:** add shared sphere-query carry retraction, filtered against player/self, with smooth in/out movement. Verify Burger and terminal against wall, furniture, and customer. *(medium; 3 files)*
+5. **End-to-end visual regression:** render tooltip/outline/terminal/carry views and run food/payment/headless regressions. *(small; tests/docs)*
+
+## Acceptance Checks
+
+- World labels are small and consistent: `Burger`, `Plate`, `Payment Terminal`; customer payment stays contextual as `Take Payment`.
+- The selected object has only a thin outer yellow contour, including the terminal from every angle; the black comic outline remains unchanged and absent from the card.
+- New terminal buttons/screen/carry poses align to the imported `POS_*` hierarchy and retain integer-cent payment behavior.
+- `E` picks up only; LMB places/uses only held items; collision-aware carry never renders deeply through obstacle/NPC geometry.
+
+## Risks and Mitigations
+
+| Risk | Impact | Mitigation |
+| --- | --- | --- |
+| Screen-space mask camera visibility leaks into main camera | High | Reserve a dedicated visual layer excluded from the player camera and cover it with a focused visual harness. |
+| New model plane orientation mirrors the live screen | High | Derive the display surface from `POS_Screen` transform and inspect rendered cents/keypad frames. |
+| Retraction self-hits or fights terminal tween | High | Exclude player/held colliders, use only default obstacle layer, and keep explicit terminal payment pose separate from ordinary carry retraction. |
+| Input migration triggers a keypad click on entry | Medium | Consume LMB before payment mode is enabled and test first click independently. |
+
 # Current Task: Controlled Customer Seating Alignment
 
 ## Overview

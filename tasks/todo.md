@@ -1,3 +1,83 @@
+# Interaction Presentation, Carry, and New Terminal Task List
+
+## Task 33: Centralize Object Labels and Split Pickup/Use Input
+
+**Description:** Apply one small Label3D style to physical object labels, use semantic input actions, and reserve `E` for pickup and LMB for actions on held items.
+
+**Acceptance criteria:**
+
+- [ ] Burger, Plate, and Payment Terminal labels use the same small style and exact object names.
+- [ ] E only picks up; LMB only places/uses an already held item, while customer payment remains `Take Payment`.
+
+**Verification:** Focused player-input harness and real scene tooltip inspection.
+
+**Dependencies:** None.
+
+**Files likely touched:** `scripts/interaction_tooltip.gd`, `scripts/pickup_item.gd`, `scripts/table_station.gd`, `scripts/player_controller.gd`, `project.godot`.
+
+## Task 34: Render One Silhouette Highlight per Interactable
+
+**Description:** Replace per-child hull overlays with one union mask and a thin screen-space selection edge.
+
+**Acceptance criteria:**
+
+- [ ] Burger/table/terminal show one thin outer yellow contour without interior component borders.
+- [ ] Existing black comic outlines remain independent.
+
+**Verification:** Runtime mask-controller assertions plus front/side/rear terminal captures.
+
+**Dependencies:** Task 33.
+
+**Files likely touched:** `scripts/interaction_outline_controller.gd`, `shaders/interaction_outline.gdshader`, `scenes/player/player.tscn`, `scripts/pickup_item.gd`, `scripts/table_station.gd`.
+
+## Task 35: Adapt Payment Terminal and Exempt the Card
+
+**Description:** Re-map wrapper screen/hitboxes/collisions/poses to the imported `POS_*` terminal and remove only the card's comic outline.
+
+**Acceptance criteria:**
+
+- [ ] Every payment key/screen aligns to the new model and cents entry/approval remain correct.
+- [ ] Card retains its materials without a black hull outline.
+
+**Verification:** Focused keypad test plus Compatibility terminal/card capture.
+
+**Dependencies:** Task 34.
+
+**Files likely touched:** `scenes/props/payment_terminal.tscn`, `scripts/payment_terminal_controller.gd`, `scripts/customer_controller.gd`, `scripts/customer_hand_props.gd`.
+
+## Task 36: Add Shared Obstacle-Aware Held Carry
+
+**Description:** Retract any held pickup smoothly through one filtered sphere-query solver rather than per-prop clipping hacks.
+
+**Acceptance criteria:**
+
+- [ ] Burger and terminal retract near world/furniture/NPC obstacles, never self-hit, then smoothly restore.
+- [ ] Explicit terminal payment pose stays readable and does not invoke world pickup.
+
+**Verification:** Focused physics-query harness and real camera captures.
+
+**Dependencies:** Task 33.
+
+**Files likely touched:** `scripts/player_controller.gd`, `scripts/pickup_item.gd`, `.tmp/verify_held_item_retraction.gd`.
+
+## Task 37: Validate the Complete Interaction Loop
+
+**Description:** Verify new inputs, labels, outline, terminal, card, carry safety, and existing customer progression in the real scene.
+
+**Acceptance criteria:**
+
+- [ ] All focused regressions and a main-scene smoke run pass.
+- [ ] Visual captures cover tooltips, terminal keypad/screen, selection outline, card, and retraction.
+
+**Verification:** Godot 4.7 parse/main run plus focused interaction, food, and payment tests.
+
+**Dependencies:** Tasks 33-36.
+
+## Checkpoint: Interaction Presentation Complete
+
+- [ ] Object naming/input contract, silhouette outline, terminal/card, and carry retraction are verified.
+- [ ] No new project parse/runtime errors.
+
 # Controlled Customer Seating Alignment Task List
 
 ## Task 31: Define Station-Owned Seating and Exit Anchors

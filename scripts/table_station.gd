@@ -19,7 +19,7 @@ signal empty_plate_collected
 
 var food_delivery_allowed := false
 var placed_item: Node3D
-var _tooltip: Label3D
+var _tooltip: InteractionTooltip
 var _outline_material: ShaderMaterial
 var _mesh_overlays := {}
 
@@ -48,7 +48,7 @@ func can_place_item(item: Node3D) -> bool:
 
 
 func get_tooltip_text() -> String:
-    return "Place"
+    return "Table"
 
 
 func set_place_highlighted(enabled: bool) -> void:
@@ -89,17 +89,7 @@ func _on_placed_item_picked_up(item: Node3D) -> void:
 
 
 func _build_tooltip() -> void:
-    _tooltip = Label3D.new()
-    _tooltip.name = "PlaceTooltip"
-    _tooltip.position = Vector3(0.0, place_tooltip_height, 0.0)
-    _tooltip.text = "Place"
-    _tooltip.font_size = 48
-    _tooltip.outline_size = 9
-    _tooltip.modulate = Color("#fff0c8")
-    _tooltip.outline_modulate = Color("#2a202c")
-    _tooltip.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-    _tooltip.no_depth_test = true
-    _tooltip.visible = false
+    _tooltip = InteractionTooltip.create_label(&"PlaceTooltip", "Table", place_tooltip_height)
     add_child(_tooltip)
 
 

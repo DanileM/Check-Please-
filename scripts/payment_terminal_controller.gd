@@ -36,7 +36,7 @@ func is_payment_terminal() -> bool:
 
 func get_tooltip_text() -> String:
 
-    return "Take Payment"
+    return "Payment Terminal"
 
 
 func pick_up_to(carry_anchor: Node3D) -> bool:

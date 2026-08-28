@@ -17,7 +17,7 @@ signal picked_up(item: Node3D)
 var _held := false
 var _interactable := true
 var _world_scale := Vector3.ONE
-var _tooltip: Label3D
+var _tooltip: InteractionTooltip
 var _outline_material: ShaderMaterial
 var _mesh_overlays := {}
 var _collider_layers: Array[Dictionary] = []
@@ -116,17 +116,7 @@ func set_burger_visible(value: bool) -> void:
 
 func _build_tooltip() -> void:
 
-	_tooltip = Label3D.new()
-	_tooltip.name = "WorldTooltip"
-	_tooltip.position = Vector3(0.0, tooltip_height, 0.0)
-	_tooltip.text = display_name
-	_tooltip.font_size = 48
-	_tooltip.outline_size = 9
-	_tooltip.modulate = Color("#fff0c8")
-	_tooltip.outline_modulate = Color("#2a202c")
-	_tooltip.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	_tooltip.no_depth_test = true
-	_tooltip.visible = false
+	_tooltip = InteractionTooltip.create_label(&"WorldTooltip", display_name, tooltip_height)
 	add_child(_tooltip)
 
 

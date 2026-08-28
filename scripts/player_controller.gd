@@ -20,12 +20,12 @@ var payment_mode := false
 
 func _ready() -> void:
     Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-    hint.text = "WASD — move    E — inspect    ESC — mouse"
+    hint.text = "WASD — move    E — pick up    ESC — mouse"
     ray.target_position.z = -interaction_distance
 
 func _unhandled_input(event: InputEvent) -> void:
     if payment_mode:
-        if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+        if event.is_action_pressed(&"use_held_item"):
             if payment_terminal:
                 payment_terminal.call("click_from_camera", camera, event.position)
         elif event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
@@ -37,9 +37,12 @@ func _unhandled_input(event: InputEvent) -> void:
         head.rotation.x = clamp(head.rotation.x, deg_to_rad(-82.0), deg_to_rad(82.0))
     elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
         Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED else Input.MOUSE_MODE_CAPTURED
-    elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
-        Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-    elif event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_E:
+    elif event.is_action_pressed(&"use_held_item"):
+        if _use_held_item():
+            get_viewport().set_input_as_handled()
+        elif Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+            Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+    elif event.is_action_pressed(&"interact_pickup"):
         _interact()
 
 func _physics_process(delta: float) -> void:
@@ -98,11 +101,12 @@ func end_payment_mode() -> void:
     hint.text = "Carrying terminal"
 
 func _interact() -> void:
+    _pick_up_interaction_target()
+
+func _pick_up_interaction_target() -> bool:
     if interaction_target == null:
-        return
-    if _is_payment_customer_target(interaction_target):
-        begin_payment_mode(interaction_target as Node3D)
-    elif interaction_target.is_in_group("pickup_item") and not has_held_item():
+        return false
+    if interaction_target.is_in_group("pickup_item") and not has_held_item():
         if interaction_target.pick_up_to(carry_anchor):
             held_item = interaction_target
             if _is_payment_terminal(held_item):
@@ -111,10 +115,20 @@ func _interact() -> void:
                 if not payment_terminal.is_connected("payment_approved", approval_callback):
                     payment_terminal.connect("payment_approved", approval_callback)
             _set_interaction_target(null)
-    elif interaction_target.is_in_group("table_station") and has_held_item():
+            return true
+    return false
+
+func _use_held_item() -> bool:
+    if interaction_target == null or not has_held_item():
+        return false
+    if _is_payment_customer_target(interaction_target):
+        return begin_payment_mode(interaction_target as Node3D)
+    if interaction_target.is_in_group("table_station"):
         if interaction_target.place_item(held_item):
             held_item = null
             _set_interaction_target(null)
+            return true
+    return false
 
 func _update_interaction_target() -> void:
     ray.force_raycast_update()
@@ -150,17 +164,17 @@ func _set_interaction_target(next_target: Node) -> void:
     if _is_payment_customer_target(interaction_target):
         if payment_terminal:
             payment_terminal.set_highlighted(true)
-        hint.text = "E — Take Payment"
+        hint.text = "LMB — Take Payment"
     elif interaction_target and interaction_target.has_method("set_highlighted"):
         interaction_target.set_highlighted(true)
         hint.text = "E — %s" % interaction_target.get_tooltip_text()
     elif interaction_target and interaction_target.has_method("set_place_highlighted"):
         interaction_target.set_place_highlighted(true)
-        hint.text = "E — %s" % interaction_target.get_tooltip_text()
+        hint.text = "LMB — Place"
     elif has_held_item():
         hint.text = "Carrying terminal" if payment_terminal else "Carrying food"
     else:
-        hint.text = "WASD — move    E — inspect    ESC — mouse"
+        hint.text = "WASD — move    E — pick up    ESC — mouse"
 
 func _is_payment_customer_target(target: Node) -> bool:
     return (
